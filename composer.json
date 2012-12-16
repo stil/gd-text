@@ -1,0 +1,8 @@
+{
+    "name": "stil/gd-text",
+    "autoload": {
+        "psr-0": {
+            "GDText": "src/"
+        }
+    }
+}

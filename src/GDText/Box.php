@@ -102,6 +102,27 @@ class Box
         $this->lineHeight = $this->lineHeight*$this->fontSize;
         $this->leading = ($this->leading*$this->lineHeight)-$this->lineHeight;
         
+        // If the line has no new line chars then wrap it.
+        if(count($lines) == 1) {
+            unset($lines[0]);
+            $words = explode(" ", $text);
+            $line = $words[0];
+            for($i = 1; $i < count($words); $i++) {
+                
+                $box = imageftbbox($this->fontSize, 0, $this->fontFace, $line." ".$words[$i]);
+                
+                if(($box[4]-$box[6]) >= $this->box['width']) {
+                    $lines[] = $line;
+                    $line = $words[$i];
+                }
+                else {
+                    $line .= " ".$words[$i];
+                }
+            }
+            $lines[] = $line; 
+        }
+        
+
         if ($this->debug==true) {
             imagefilledrectangle(
                 $this->im,

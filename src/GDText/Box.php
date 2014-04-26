@@ -96,34 +96,31 @@ class Box
     
     public function draw($text)
     {
-        //debug_print_backtrace();
-        $lines = explode("\n", $text);
-        
         $this->lineHeight = $this->lineHeight*$this->fontSize;
         $this->leading = ($this->leading*$this->lineHeight)-$this->lineHeight;
         
-        // If the line has no new line chars then wrap it.
-        if(count($lines) == 1) {
-            unset($lines[0]);
-            $words = explode(" ", $text);
+        $lines = array();
+        // Split text explicitly into lines by \n, \r\n and \r
+        $explicitLines = preg_split('/\n|\r\n?/', $text);
+        foreach ($explicitLines as $line) {
+            // Check every line if it needs to be wrapped
+            $words = explode(" ", $line);
             $line = $words[0];
-            for($i = 1; $i < count($words); $i++) {
-                
+            for ($i = 1; $i < count($words); $i++) {
                 $box = imageftbbox($this->fontSize, 0, $this->fontFace, $line." ".$words[$i]);
                 
-                if(($box[4]-$box[6]) >= $this->box['width']) {
+                if (($box[4]-$box[6]) >= $this->box['width']) {
                     $lines[] = $line;
                     $line = $words[$i];
-                }
-                else {
+                } else {
                     $line .= " ".$words[$i];
                 }
             }
-            $lines[] = $line; 
+            $lines[] = $line;
         }
         
 
-        if ($this->debug==true) {
+        if ($this->debug == true) {
             imagefilledrectangle(
                 $this->im,
                 $this->box['x'],
@@ -148,7 +145,7 @@ class Box
                 break;
         }
         
-        $n=0;
+        $n = 0;
         foreach ($lines as $line) {
             $box = imageftbbox($this->fontSize, 0, $this->fontFace, $line);
             switch ($this->alignX) {

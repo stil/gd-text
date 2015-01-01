@@ -1,5 +1,7 @@
 {
     "name": "stil/gd-text",
+    "description": "A class drawing multiline and aligned text on pictures. Uses GD extension.",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "GDText\\": "src/"

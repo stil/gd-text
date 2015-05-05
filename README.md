@@ -63,7 +63,7 @@ $backgroundColor = imagecolorallocate($im, 0, 18, 64);
 imagefill($im, 0, 0, $backgroundColor);
 
 $box = new Box($im);
-$box->setFontFace(__DIR__.'/Minecraftia.ttf'); // http://www.dafont.com/franchise.font
+$box->setFontFace(__DIR__.'/Minecraftia.ttf'); // http://www.dafont.com/minecraftia.font
 $box->setFontColor(new Color(255, 75, 140));
 $box->setTextShadow(new Color(0, 0, 0, 50), 2, 2);
 $box->setFontSize(8);

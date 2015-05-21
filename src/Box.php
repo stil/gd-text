@@ -53,6 +53,9 @@ class Box
      */
     protected $textShadow = false;
 
+    /** @var string */
+    protected $wordSeparator = '-';
+
     /**
      * @var array
      */
@@ -67,6 +70,14 @@ class Box
     {
         $this->im = $image;
         $this->fontColor = new Color(0, 0, 0);
+    }
+
+    /**
+     * @param string $wordSeparator
+     */
+    public function setWordSeparator($wordSeparator)
+    {
+        $this->wordSeparator = $wordSeparator;
     }
 
     /**
@@ -181,21 +192,9 @@ class Box
 
         $lines = array();
         // Split text explicitly into lines by \n, \r\n and \r
-        $explicitLines = preg_split('/\n|\r\n?/', $text);
+        $explicitLines = $this->getExplicitLines($text);
         foreach ($explicitLines as $line) {
-            // Check every line if it needs to be wrapped
-            $words = explode(" ", $line);
-            $line = $words[0];
-            for ($i = 1; $i < count($words); $i++) {
-                $box = $this->calculateBox($line." ".$words[$i]);
-                if (($box[4]-$box[6]) >= $this->box['width']) {
-                    $lines[] = $line;
-                    $line = $words[$i];
-                } else {
-                    $line .= " ".$words[$i];
-                }
-            }
-            $lines[] = $line;
+            $lines = $this->mergeArrayValues($lines, $this->splitLine($line));
         }
 
         if ($this->debug) {
@@ -211,7 +210,7 @@ class Box
 
         $lineHeightPx = $this->lineHeight * $this->fontSize;
         $textHeight = count($lines) * $lineHeightPx;
-        
+
         switch ($this->alignY) {
             case 'center':
                 $yAlign = ($this->box['height'] / 2) - ($textHeight / 2);
@@ -223,7 +222,7 @@ class Box
             default:
                 $yAlign = 0;
         }
-        
+
         $n = 0;
         foreach ($lines as $line) {
             $box = $this->calculateBox($line);
@@ -244,7 +243,7 @@ class Box
             // current line X and Y position
             $xMOD = $this->box['x'] + $xAlign;
             $yMOD = $this->box['y'] + $yAlign + $yShift + ($n * $lineHeightPx);
-            
+
             if ($this->debug) {
                 // Marks current line with color
                 $this->drawFilledRectangle(
@@ -255,7 +254,7 @@ class Box
                     new Color(rand(1, 180), rand(1, 180), rand(1, 180))
                 );
             }
-            
+
             if ($this->textShadow !== false) {
                 $this->drawInternal(
                     $xMOD + $this->textShadow['x'],
@@ -276,6 +275,54 @@ class Box
         }
     }
 
+    protected function getExplicitLines($text)
+    {
+        return preg_split('/\n|\r\n?/', $text);
+    }
+
+    protected function splitLine($text)
+    {
+        $lines = [];
+        $lineWords = [];
+        $words = explode(" ", $text);
+        do {
+            $word = array_shift($words);
+            $lineWords[] = $word;
+            if ($this->getTextWidth(implode(' ', $lineWords)) < $this->box['width']) {
+                continue;
+            } else {
+                if (count($lineWords) == 1) {
+                    list($line, $rest) = $this->splitWord($lineWords[0]);
+                    $lines[] = $line;
+                    array_unshift($words, $rest);
+                } else {
+                    $last = array_pop($lineWords);
+                    array_unshift($words, $last);
+                    $lines[] = implode(' ', $lineWords);
+                }
+                $lineWords = [];
+            }
+        } while (count($words));
+        $lines[] = implode(' ', $lineWords);
+        return $lines;
+    }
+
+    protected function splitWord($word)
+    {
+        if ($this->getTextWidth($word) <= $this->box['width']) {
+            return [$word, ''];
+        } else {
+            $characters = str_split($word);
+            $length = count($characters);
+            do {
+                $length--;
+                $line = implode('', array_slice($characters, 0, $length)) . $this->wordSeparator;
+            } while($this->getTextWidth($line) > $this->box['width']);
+            $rest = implode('', array_slice($characters, $length));
+            return [$line, $rest];
+        }
+    }
+
     protected function getFontSizeInPoints()
     {
         return 0.75 * $this->fontSize;
@@ -293,6 +340,12 @@ class Box
         return imageftbbox($this->getFontSizeInPoints(), 0, $this->fontFace, $text);
     }
 
+    protected function getTextWidth($text)
+    {
+        $box = $this->calculateBox($text);
+        return $box[4]-$box[6];
+    }
+
     protected function drawInternal($x, $y, Color $color, $text)
     {
         imagefttext(
@@ -306,4 +359,13 @@ class Box
             $text
         );
     }
+
+    protected function mergeArrayValues($array1, $array2)
+    {
+        foreach ($array2 as $value) {
+            $array1[] = $value;
+        }
+        return $array1;
+    }
+
 }

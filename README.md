@@ -36,7 +36,6 @@ $box->setFontFace(__DIR__.'/Prisma.otf'); // http://www.dafont.com/prisma.font
 $box->setFontSize(70);
 $box->setFontColor(new Color(148, 212, 1));
 $box->setTextShadow(new Color(0, 0, 0, 50), 0, -2);
-$box->setLeading(0.7);
 $box->setBox(20, 20, 460, 460);
 $box->setTextAlign('right', 'bottom');
 $box->draw("Prisma");

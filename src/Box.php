@@ -11,6 +11,16 @@ class Box
     /**
      * @var int
      */
+    protected $strokeSize = 0;
+
+    /**
+     * @var Color
+     */
+    protected $strokeColor;
+
+    /**
+     * @var int
+     */
     protected $fontSize = 12;
 
     /**
@@ -67,6 +77,7 @@ class Box
     {
         $this->im = $image;
         $this->fontColor = new Color(0, 0, 0);
+        $this->strokeColor = new Color(0, 0, 0);
     }
 
     /**
@@ -91,6 +102,22 @@ class Box
     public function setFontSize($v)
     {
         $this->fontSize = $v;
+    }
+
+    /**
+     * @param Color $color Stroke color
+     */
+    public function setStrokeColor(Color $color)
+    {
+        $this->strokeColor = $color;
+    }
+    
+    /**
+     * @param int $v Stroke size in *pixels*
+     */
+    public function setStrokeSize($v)
+    {
+        $this->strokeSize = $v;
     }
 
     /**
@@ -263,8 +290,10 @@ class Box
                     $this->textShadow['color'],
                     $line
                 );
+                
             }
 
+            $this->strokeText($xMOD, $yMOD, $line);
             $this->drawInternal(
                 $xMOD,
                 $yMOD,
@@ -291,6 +320,16 @@ class Box
     protected function calculateBox($text)
     {
         return imageftbbox($this->getFontSizeInPoints(), 0, $this->fontFace, $text);
+    }
+
+    protected function strokeText($x, $y, $text)
+    {
+        $px = $this->strokeSize;
+        for ($c1 = $x - $px; $c1 <= $x + $px; $c1++) {
+            for ($c2 = $y - $px; $c2 <= $y + $px; $c2++) {
+                $this->drawInternal($c1, $c2, $this->strokeColor, $text);
+            }
+        }
     }
 
     protected function drawInternal($x, $y, Color $color, $text)

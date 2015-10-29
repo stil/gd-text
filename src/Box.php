@@ -226,13 +226,13 @@ class Box
         $textHeight = count($lines) * $lineHeightPx;
         
         switch ($this->alignY) {
-            case 'center':
+            case VerticalAlignment::Center:
                 $yAlign = ($this->box['height'] / 2) - ($textHeight / 2);
                 break;
-            case 'bottom':
+            case VerticalAlignment::Bottom:
                 $yAlign = $this->box['height'] - $textHeight;
                 break;
-            case 'top':
+            case VerticalAlignment::Top:
             default:
                 $yAlign = 0;
         }
@@ -242,13 +242,13 @@ class Box
             $box = $this->calculateBox($line);
             $boxWidth = $box[2] - $box[0];
             switch ($this->alignX) {
-                case 'center':
+                case HorizontalAlignment::Center:
                     $xAlign = ($this->box['width'] - $boxWidth) / 2;
                     break;
-                case 'right':
+                case HorizontalAlignment::Right:
                     $xAlign = ($this->box['width'] - $boxWidth);
                     break;
-                case 'left':
+                case HorizontalAlignment::Left:
                 default:
                     $xAlign = 0;
             }

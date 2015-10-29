@@ -54,6 +54,11 @@ class Box
     protected $textShadow = false;
 
     /**
+     * @var bool|Color
+     */
+    protected $backgroundColor = false;
+
+    /**
      * @var array
      */
     protected $box = array(
@@ -105,6 +110,14 @@ class Box
             'x' => $xShift,
             'y' => $yShift
         );
+    }
+
+    /**
+     * @param Color $color Font color
+     */
+    public function setBackgroundColor(Color $color)
+    {
+        $this->backgroundColor = $color;
     }
 
     /**
@@ -244,6 +257,19 @@ class Box
             // current line X and Y position
             $xMOD = $this->box['x'] + $xAlign;
             $yMOD = $this->box['y'] + $yAlign + $yShift + ($n * $lineHeightPx);
+
+            if ($line && $this->backgroundColor) {
+                // Marks whole texbox area with given background-color
+                $backgroundHeight = $this->fontSize;
+
+                $this->drawFilledRectangle(
+                    $xMOD,
+                    $this->box['y'] + $yAlign + ($n * $lineHeightPx) + ($lineHeightPx - $backgroundHeight) + (1 - $this->lineHeight) * 13 * (1 / 50 * $this->fontSize),
+                    $boxWidth,
+                    $backgroundHeight,
+                    $this->backgroundColor
+                );
+            }
             
             if ($this->debug) {
                 // Marks current line with color

@@ -3,11 +3,11 @@ namespace GDText\Tests;
 
 use GDText\Color;
 
-class ColorTest extends \PHPUnit_Framework_TestCase
+class ColorTest extends TestCase
 {
     public function testPaletteImage()
     {
-        $im = imagecreatefromgif(__DIR__.'/images/owl.gif');
+        $im = $this->openImageResource('owl.gif');
 
         $color = new Color(0, 0, 255);
 
@@ -17,7 +17,7 @@ class ColorTest extends \PHPUnit_Framework_TestCase
 
     public function testTrueColorImage()
     {
-        $im = imagecreatefrompng(__DIR__.'/images/owl_png24.png');
+        $im = $this->openImageResource('owl_png24.png');
 
         $color = new Color(0, 0, 255);
 

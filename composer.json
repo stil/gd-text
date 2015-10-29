@@ -8,7 +8,8 @@
     },
     "autoload": {
         "psr-4": {
-            "GDText\\": "src/"
+            "GDText\\": "src/",
+            "GDText\\Tests\\": "tests/"
         }
     }
 }

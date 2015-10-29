@@ -40,26 +40,25 @@ class Color
     /**
      * @param resource $image GD image resource
      * @return int Returns the index of the specified color+alpha in the palette of the image,
-     *             or -1 if the color does not exist in the image's palette.
+     *             or index of allocated color if the color does not exist in the image's palette.
      */
     public function getIndex($image)
     {
-        if ($this->hasAlphaChannel()) {
-            return imagecolorexactalpha(
-                $image,
-                $this->red,
-                $this->green,
-                $this->blue,
-                $this->alpha
-            );
-        } else {
-            return imagecolorexact(
-                $image,
-                $this->red,
-                $this->green,
-                $this->blue
-            );
+        $index = $this->hasAlphaChannel()
+            ? imagecolorexactalpha(
+                $image, $this->red, $this->green, $this->blue, $this->alpha)
+            : imagecolorexact(
+                $image, $this->red, $this->green, $this->blue);
+
+        if ($index !== -1) {
+            return $index;
         }
+
+        return $this->hasAlphaChannel()
+            ? imagecolorallocatealpha(
+                $image, $this->red, $this->green, $this->blue, $this->alpha)
+            : imagecolorallocate(
+                $image, $this->red, $this->green, $this->blue);
     }
 
     /**

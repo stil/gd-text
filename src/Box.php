@@ -11,6 +11,20 @@ class Box
     /**
      * @var int
      */
+    protected $strokeSize = 0;
+
+    /**
+     * @var Color
+     */
+    protected $strokeColor;
+    /**
+    * @var int
+    */
+    protected $letterSpacing = 0;
+
+    /**
+     * @var int
+     */
     protected $fontSize = 12;
 
     /**
@@ -72,6 +86,7 @@ class Box
     {
         $this->im = $image;
         $this->fontColor = new Color(0, 0, 0);
+        $this->strokeColor= new Color(0,0,0);
     }
 
     /**
@@ -97,6 +112,31 @@ class Box
     {
         $this->fontSize = $v;
     }
+
+     /**
+     * @param int $letterSpacing Stroke color
+     */
+    public function setLetterSpacing($letterSpacing)
+    {
+        $this->letterSpacing = $letterSpacing;
+    }
+
+    /**
+     * @param Color $color Stroke color
+     */
+    public function setStrokeColor(Color $color)
+    {
+        $this->strokeColor = $color;
+    }
+    /**
+     * @param int $v Stroke size in *pixels*
+     */
+    public function setStrokeSize($v)
+    {
+        $this->strokeSize = $v;
+    }
+
+    
 
     /**
      * @param Color $color Shadow color
@@ -289,6 +329,7 @@ class Box
                     $this->textShadow['color'],
                     $line
                 );
+                
             }
 
             $this->drawInternal(
@@ -318,18 +359,41 @@ class Box
     {
         return imageftbbox($this->getFontSizeInPoints(), 0, $this->fontFace, $text);
     }
+    protected function imagettfstroketext(&$image, $size, $angle, $x, $y, $textcolor, $strokecolor, $fontfile, $text, $px) {
+        for($c1 = ($x-abs($px)); $c1 <= ($x+abs($px)); $c1++)
+            for($c2 = ($y-abs($px)); $c2 <= ($y+abs($px)); $c2++)
+                $bg = $this->imagettftextSp($image, $size, $angle, $c1, $c2, $strokecolor, $fontfile, $text, $this->letterSpacing);
+        return $this->imagettftextSp($image, $size, $angle, $x, $y, $textcolor, $fontfile, $text, $this->letterSpacing);
+    }
+    protected function imagettftextSp($image, $size, $angle, $x, $y, $color, $font, $text, $spacing = 0)
+    {        
+        if ($spacing == 0) {
+            imagettftext($image, $size, $angle, $x, $y, $color, $font, $text);
+        }  else  {
+            $temp_x = $x;
+            for ($i = 0; $i < strlen($text); $i++)
+            {
+                $bbox = imagettftext($image, $size, $angle, $temp_x, $y, $color, $font, $text[$i]);
+                $temp_x += $spacing + ($bbox[2] - $bbox[0]);
+            }
+        }
+    }
 
     protected function drawInternal($x, $y, Color $color, $text)
     {
-        imagefttext(
+        
+        $this->imagettfstroketext(
             $this->im,
             $this->getFontSizeInPoints(),
             0, // no rotation
             $x,
             $y,
             $color->getIndex($this->im),
+            $this->strokeColor->getIndex($this->im),
             $this->fontFace,
-            $text
+            $text,
+            $this->strokeSize
+            
         );
     }
 }

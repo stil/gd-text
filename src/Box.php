@@ -29,6 +29,11 @@ class Box
     protected $alignY = 'top';
 
     /**
+     * @var int
+     */
+    protected $textWrapping = TextWrapping::WrapWithOverflow;
+
+    /**
      * @var float
      */
     protected $lineHeight = 1.25;
@@ -183,6 +188,14 @@ class Box
     }
 
     /**
+     * @param int $textWrapping
+     */
+    public function setTextWrapping($textWrapping)
+    {
+        $this->textWrapping = $textWrapping;
+    }
+
+    /**
      * Draws the text on the picture.
      * @param string $text Text to draw. May contain newline characters.
      */
@@ -192,23 +205,14 @@ class Box
             throw new \InvalidArgumentException('No path to font file has been specified.');
         }
 
-        $lines = array();
-        // Split text explicitly into lines by \n, \r\n and \r
-        $explicitLines = preg_split('/\n|\r\n?/', $text);
-        foreach ($explicitLines as $line) {
-            // Check every line if it needs to be wrapped
-            $words = explode(" ", $line);
-            $line = $words[0];
-            for ($i = 1; $i < count($words); $i++) {
-                $box = $this->calculateBox($line." ".$words[$i]);
-                if (($box[4]-$box[6]) >= $this->box['width']) {
-                    $lines[] = $line;
-                    $line = $words[$i];
-                } else {
-                    $line .= " ".$words[$i];
-                }
-            }
-            $lines[] = $line;
+        switch ($this->textWrapping) {
+            case TextWrapping::NoWrap:
+                $lines = array($text);
+                break;
+            case TextWrapping::WrapWithOverflow:
+            default:
+                $lines = $this->wrapTextWithOverflow($text);
+                break;
         }
 
         if ($this->debug) {
@@ -224,7 +228,7 @@ class Box
 
         $lineHeightPx = $this->lineHeight * $this->fontSize;
         $textHeight = count($lines) * $lineHeightPx;
-        
+
         switch ($this->alignY) {
             case VerticalAlignment::Center:
                 $yAlign = ($this->box['height'] / 2) - ($textHeight / 2);
@@ -236,7 +240,7 @@ class Box
             default:
                 $yAlign = 0;
         }
-        
+
         $n = 0;
         foreach ($lines as $line) {
             $box = $this->calculateBox($line);
@@ -270,7 +274,7 @@ class Box
                     $this->backgroundColor
                 );
             }
-            
+
             if ($this->debug) {
                 // Marks current line with color
                 $this->drawFilledRectangle(
@@ -281,7 +285,7 @@ class Box
                     new Color(rand(1, 180), rand(1, 180), rand(1, 180))
                 );
             }
-            
+
             if ($this->textShadow !== false) {
                 $this->drawInternal(
                     $xMOD + $this->textShadow['x'],
@@ -302,6 +306,37 @@ class Box
         }
     }
 
+    /**
+     * Splits overflowing text into array of strings.
+     * @param string $text
+     * @return string[]
+     */
+    protected function wrapTextWithOverflow($text)
+    {
+        $lines = array();
+        // Split text explicitly into lines by \n, \r\n and \r
+        $explicitLines = preg_split('/\n|\r\n?/', $text);
+        foreach ($explicitLines as $line) {
+            // Check every line if it needs to be wrapped
+            $words = explode(" ", $line);
+            $line = $words[0];
+            for ($i = 1; $i < count($words); $i++) {
+                $box = $this->calculateBox($line." ".$words[$i]);
+                if (($box[4]-$box[6]) >= $this->box['width']) {
+                    $lines[] = $line;
+                    $line = $words[$i];
+                } else {
+                    $line .= " ".$words[$i];
+                }
+            }
+            $lines[] = $line;
+        }
+        return $lines;
+    }
+
+    /**
+     * @return float
+     */
     protected function getFontSizeInPoints()
     {
         return 0.75 * $this->fontSize;

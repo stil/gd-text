@@ -385,9 +385,10 @@ class Box
 
     protected function strokeText($x, $y, $text)
     {
-        $px = $this->strokeSize;
-        for ($c1 = $x - $px; $c1 <= $x + $px; $c1++) {
-            for ($c2 = $y - $px; $c2 <= $y + $px; $c2++) {
+        $size = $this->strokeSize;
+        if ($size <= 0) return;
+        for ($c1 = $x - $size; $c1 <= $x + $size; $c1++) {
+            for ($c2 = $y - $size; $c2 <= $y + $size; $c2++) {
                 $this->drawInternal($c1, $c2, $this->strokeColor, $text);
             }
         }

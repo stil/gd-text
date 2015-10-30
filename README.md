@@ -48,7 +48,8 @@ Example output:
 
 ![fonts example](examples/fonts.png)
 
-###Multilined text
+Multilined text
+---------------
 
 ```php
 <?php
@@ -78,15 +79,83 @@ header("Content-type: image/png;");
 imagepng($im, null, 9, PNG_ALL_FILTERS);
 ```
 
+Text stroke
+-----------
+
+```php
+<?php
+require __DIR__.'/../vendor/autoload.php';
+
+use GDText\Box;
+use GDText\Color;
+
+$im = imagecreatetruecolor(500, 500);
+$backgroundColor = imagecolorallocate($im, 0, 18, 64);
+imagefill($im, 0, 0, $backgroundColor);
+
+$box = new Box($im);
+$box->setFontFace(__DIR__.'/Elevant bold.ttf'); // http://www.dafont.com/elevant-by-pelash.font
+$box->setFontSize(150);
+$box->setFontColor(new Color(255, 255, 255));
+$box->setBox(15, 20, 460, 460);
+$box->setTextAlign('center', 'center');
+
+$box->setStrokeColor(new Color(255, 75, 140)); // Set stroke color
+$box->setStrokeSize(3); // Stroke size in pixels
+
+$box->draw("Elevant");
+
+header("Content-type: image/png;");
+imagepng($im, null, 9, PNG_ALL_FILTERS);
+```
+
+Text background
+-----------
+
+```php
+<?php
+require __DIR__.'/../vendor/autoload.php';
+
+use GDText\Box;
+use GDText\Color;
+
+$im = imagecreatetruecolor(500, 500);
+$backgroundColor = imagecolorallocate($im, 0, 18, 64);
+imagefill($im, 0, 0, $backgroundColor);
+
+$box = new Box($im);
+$box->setFontFace(__DIR__.'/fonts/BebasNeue.otf'); // http://www.dafont.com/elevant-by-pelash.font
+$box->setFontSize(100);
+$box->setFontColor(new Color(255, 255, 255));
+$box->setBox(15, 20, 460, 460);
+$box->setTextAlign('center', 'center');
+
+$box->setBackgroundColor(new Color(255, 86, 77));
+
+$box->draw("Bebas Neue");
+
+header("Content-type: image/png;");
+imagepng($im, null, 9, PNG_ALL_FILTERS);
+```
+
+Demos
+------
+Line height demo:
+
 ![line height example](examples/lineheight.gif)
 
-*line height demo*
-
+Text alignment demo:
 
 ![align example](examples/alignment.gif)
 
-*text alignment demo*
+Text stroke demo:
+
+![stroke example](examples/stroke.gif)
+
+Text background demo:
+
+![stroke example](examples/background.gif)
+
+Debug mode enabled demo:
 
 ![debug example](examples/debug.png)
-
-*debug mode enabled demo*

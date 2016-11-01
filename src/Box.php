@@ -323,7 +323,8 @@ class Box
                 
             }
 
-            $this->strokeText($xMOD, $yMOD, $line);
+            $this->
+                ($xMOD, $yMOD, $line);
             $this->drawInternal(
                 $xMOD,
                 $yMOD,
@@ -387,10 +388,16 @@ class Box
     {
         $size = $this->strokeSize;
         if ($size <= 0) return;
-        for ($c1 = $x - $size; $c1 <= $x + $size; $c1++) {
-            for ($c2 = $y - $size; $c2 <= $y + $size; $c2++) {
-                $this->drawInternal($c1, $c2, $this->strokeColor, $text);
+        $c3=0-abs($size);
+        for ($c1=$x-abs($size);$c1<=$x+abs($size);$c1++) {
+            $c4=0-abs($size);
+            for ($c2=$y-abs($size);$c2<=$y+abs($size);$c2++) {
+                if (($c3*$c3+$c4*$c4)<=$size*$size) {
+                    $this->drawInternal($c1, $c2, $this->strokeColor, $text);
+                }
+                $c4++;
             }
+            $c3++;
         }
     }
 

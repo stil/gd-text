@@ -323,8 +323,7 @@ class Box
                 
             }
 
-            $this->
-                ($xMOD, $yMOD, $line);
+            $this->strokeText($xMOD, $yMOD, $line);
             $this->drawInternal(
                 $xMOD,
                 $yMOD,

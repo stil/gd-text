@@ -1,7 +1,7 @@
 gd-text
 =======
 
-###Basic usage example
+### Basic usage example
 ```php
 <?php
 require __DIR__.'/../vendor/autoload.php';

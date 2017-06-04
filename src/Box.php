@@ -176,7 +176,7 @@ class Box
      */
     public function setTextAlign($x = 'left', $y = 'top')
     {
-        $xAllowed = array('left', 'right', 'center');
+        $xAllowed = array('left', 'right', 'center', 'justified');
         $yAllowed = array('top', 'bottom', 'center');
 
         if (!in_array($x, $xAllowed)) {
@@ -269,15 +269,24 @@ class Box
         }
 
         $n = 0;
+        $totallines = count($lines);
+        $spacing = 0;
         foreach ($lines as $line) {
-            $box = $this->calculateBox($line);
-            $boxWidth = $box[2] - $box[0];
+            $boxWidth = $this->calculateBox($line, 1)[4];
+            $boxWidthCond = $this->calculateBox($line)[4];
+            $words = count(array_filter(preg_split('/\s+/', $line)));
             switch ($this->alignX) {
                 case HorizontalAlignment::Center:
                     $xAlign = ($this->box['width'] - $boxWidth) / 2;
                     break;
                 case HorizontalAlignment::Right:
                     $xAlign = ($this->box['width'] - $boxWidth);
+                    break;
+                case HorizontalAlignment::Justified:
+                    $xAlign = 0;
+                    if ($words > 1 && $n + 1 < $totallines) {
+                        $spacing = ($this->box['width'] - $boxWidthCond) / ($words - 1);
+                    }
                     break;
                 case HorizontalAlignment::Left:
                 default:
@@ -318,9 +327,10 @@ class Box
                     $xMOD + $this->textShadow['x'],
                     $yMOD + $this->textShadow['y'],
                     $this->textShadow['color'],
-                    $line
+                    $line,
+                    $spacing
                 );
-                
+
             }
 
             $this->strokeText($xMOD, $yMOD, $line);
@@ -328,9 +338,9 @@ class Box
                 $xMOD,
                 $yMOD,
                 $this->fontColor,
-                $line
+                $line,
+                $spacing
             );
-
             $n++;
         }
     }
@@ -350,12 +360,12 @@ class Box
             $words = explode(" ", $line);
             $line = $words[0];
             for ($i = 1; $i < count($words); $i++) {
-                $box = $this->calculateBox($line." ".$words[$i]);
-                if (($box[4]-$box[6]) >= $this->box['width']) {
+                $box = $this->calculateBox($line . " " . $words[$i], 1);
+                if (($box[4] - $box[6]) >= $this->box['width']) {
                     $lines[] = $line;
                     $line = $words[$i];
                 } else {
-                    $line .= " ".$words[$i];
+                    $line .= " " . $words[$i];
                 }
             }
             $lines[] = $line;
@@ -378,9 +388,13 @@ class Box
         );
     }
 
-    protected function calculateBox($text)
+    protected function calculateBox($text, $withspace = 0)
     {
-        return imageftbbox($this->getFontSizeInPoints(), 0, $this->fontFace, $text);
+        if ($withspace == 1) {
+            return imageftbbox($this->getFontSizeInPoints(), 0, $this->fontFace, $text);
+        } else {
+            return imageftbbox($this->getFontSizeInPoints(), 0, $this->fontFace, preg_replace('/\s+/', '', $text));
+        }
     }
 
     protected function strokeText($x, $y, $text)
@@ -394,17 +408,37 @@ class Box
         }
     }
 
-    protected function drawInternal($x, $y, Color $color, $text)
+    protected function drawInternal($x, $y, Color $color, $text, $spacing)
     {
-        imagefttext(
-            $this->im,
-            $this->getFontSizeInPoints(),
-            0, // no rotation
-            $x,
-            $y,
-            $color->getIndex($this->im),
-            $this->fontFace,
-            $text
-        );
+        if ($spacing == NULL || !is_numeric($spacing)) {
+            imagefttext(
+                $this->im,
+                $this->getFontSizeInPoints(),
+                0, // no rotation
+                $x,
+                $y,
+                $color->getIndex($this->im),
+                $this->fontFace,
+                $text
+            );
+        } else {
+            //imagefttext($this->im, $this->getFontSizeInPoints(), 0, $lastX, $y, $color->getIndex($this->im), $this->fontFace, count(preg_split('/\s+/', $text)));
+            $len = count(array_filter(preg_split('/\s+/', $text)));
+            $i = 1;
+            $prev = '';
+            foreach (array_filter(preg_split('/\s+/', $text)) as $v) {
+                if ($i == $len) {
+                    $box = $this->calculateBox($v);
+                    imagefttext($this->im, $this->getFontSizeInPoints(), 0, ($x + $this->box['width']) - $box[4], $y, $color->getIndex($this->im), $this->fontFace, $v);
+                } else {
+                    $coordinates = imagefttext($this->im, $this->getFontSizeInPoints(), 0, ($i == 1 ? $x : $lastX), $y, $color->getIndex($this->im), $this->fontFace, $v);
+                    $prev = $prev . $v;
+                    $lastX = $x + $this->calculateBox($prev)[4] + ($i * $spacing);
+                }
+                $i++;
+            }
+            // Return the newly generated image box coordinates:
+            //return array($start_x, $start_y, $coordinates[2], $coordinates[3], $coordinates[4], $coordinates[5], $start_x, $coordinates[7]);
+        }
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace GDText;
 
+use GDText\Struct\Point;
 use GDText\Struct\Rectangle;
 
 class Box
@@ -137,8 +138,7 @@ class Box
     {
         $this->textShadow = array(
             'color' => $color,
-            'x' => $xShift,
-            'y' => $yShift
+            'offset' => new Point($xShift, $yShift)
         );
     }
 
@@ -311,18 +311,21 @@ class Box
 
             if ($this->textShadow !== false) {
                 $this->drawInternal(
-                    $xMOD + $this->textShadow['x'],
-                    $yMOD + $this->textShadow['y'],
+                    new Point(
+                        $xMOD + $this->textShadow['offset']->getX(),
+                        $yMOD + $this->textShadow['offset']->getY()
+                    ),
                     $this->textShadow['color'],
                     $line
                 );
-                
             }
 
             $this->strokeText($xMOD, $yMOD, $line);
             $this->drawInternal(
-                $xMOD,
-                $yMOD,
+                new Point(
+                    $xMOD,
+                    $yMOD
+                ),
                 $this->fontColor,
                 $line
             );
@@ -390,19 +393,19 @@ class Box
         if ($size <= 0) return;
         for ($c1 = $x - $size; $c1 <= $x + $size; $c1++) {
             for ($c2 = $y - $size; $c2 <= $y + $size; $c2++) {
-                $this->drawInternal($c1, $c2, $this->strokeColor, $text);
+                $this->drawInternal(new Point($c1, $c2), $this->strokeColor, $text);
             }
         }
     }
 
-    protected function drawInternal($x, $y, Color $color, $text)
+    protected function drawInternal(Point $position, Color $color, $text)
     {
         imagefttext(
             $this->im,
             $this->getFontSizeInPoints(),
             0, // no rotation
-            $x,
-            $y,
+            $position->getX(),
+            $position->getY(),
             $color->getIndex($this->im),
             $this->fontFace,
             $text

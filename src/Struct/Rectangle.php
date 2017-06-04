@@ -2,18 +2,8 @@
 
 namespace GDText\Struct;
 
-class Rectangle
+class Rectangle extends Point
 {
-    /**
-     * @var int
-     */
-    private $x;
-
-    /**
-     * @var int
-     */
-    private $y;
-
     /**
      * @var int
      */
@@ -33,26 +23,9 @@ class Rectangle
      */
     public function __construct($x, $y, $width, $height)
     {
-        $this->x = $x;
-        $this->y = $y;
+        parent::__construct($x, $y);
         $this->width = $width;
         $this->height = $height;
-    }
-
-    /**
-     * @return int
-     */
-    public function getX()
-    {
-        return $this->x;
-    }
-
-    /**
-     * @return int
-     */
-    public function getY()
-    {
-        return $this->y;
     }
 
     /**
@@ -76,7 +49,7 @@ class Rectangle
      */
     public function getLeft()
     {
-        return $this->x;
+        return $this->getX();
     }
 
     /**
@@ -84,7 +57,7 @@ class Rectangle
      */
     public function getTop()
     {
-        return $this->y;
+        return $this->getY();
     }
 
     /**
@@ -92,7 +65,7 @@ class Rectangle
      */
     public function getRight()
     {
-        return $this->x + $this->width;
+        return $this->getX() + $this->width;
     }
 
     /**
@@ -100,6 +73,6 @@ class Rectangle
      */
     public function getBottom()
     {
-        return $this->y + $this->height;
+        return $this->getY() + $this->height;
     }
 }

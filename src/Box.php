@@ -1,6 +1,8 @@
 <?php
 namespace GDText;
 
+use GDText\Struct\Rectangle;
+
 class Box
 {
     /**
@@ -74,20 +76,16 @@ class Box
     protected $backgroundColor = false;
 
     /**
-     * @var array
+     * @var Rectangle
      */
-    protected $box = array(
-        'x' => 0,
-        'y' => 0,
-        'width' => 100,
-        'height' => 100
-    );
+    protected $box;
 
     public function __construct(&$image)
     {
         $this->im = $image;
         $this->fontColor = new Color(0, 0, 0);
         $this->strokeColor = new Color(0, 0, 0);
+        $this->box = new Rectangle(0, 0, 100, 100);
     }
 
     /**
@@ -200,10 +198,7 @@ class Box
      */
     public function setBox($x, $y, $width, $height)
     {
-        $this->box['x'] = $x;
-        $this->box['y'] = $y;
-        $this->box['width'] = $width;
-        $this->box['height'] = $height;
+        $this->box = new Rectangle($x, $y, $width, $height);
     }
 
     /**
@@ -245,10 +240,7 @@ class Box
         if ($this->debug) {
             // Marks whole texbox area with color
             $this->drawFilledRectangle(
-                $this->box['x'],
-                $this->box['y'],
-                $this->box['width'],
-                $this->box['height'],
+                $this->box,
                 new Color(rand(180, 255), rand(180, 255), rand(180, 255), 80)
             );
         }
@@ -258,10 +250,10 @@ class Box
 
         switch ($this->alignY) {
             case VerticalAlignment::Center:
-                $yAlign = ($this->box['height'] / 2) - ($textHeight / 2);
+                $yAlign = ($this->box->getHeight() / 2) - ($textHeight / 2);
                 break;
             case VerticalAlignment::Bottom:
-                $yAlign = $this->box['height'] - $textHeight;
+                $yAlign = $this->box->getHeight() - $textHeight;
                 break;
             case VerticalAlignment::Top:
             default:
@@ -274,10 +266,10 @@ class Box
             $boxWidth = $box[2] - $box[0];
             switch ($this->alignX) {
                 case HorizontalAlignment::Center:
-                    $xAlign = ($this->box['width'] - $boxWidth) / 2;
+                    $xAlign = ($this->box->getWidth() - $boxWidth) / 2;
                     break;
                 case HorizontalAlignment::Right:
-                    $xAlign = ($this->box['width'] - $boxWidth);
+                    $xAlign = ($this->box->getWidth() - $boxWidth);
                     break;
                 case HorizontalAlignment::Left:
                 default:
@@ -286,18 +278,20 @@ class Box
             $yShift = $lineHeightPx * (1 - $this->baseline);
 
             // current line X and Y position
-            $xMOD = $this->box['x'] + $xAlign;
-            $yMOD = $this->box['y'] + $yAlign + $yShift + ($n * $lineHeightPx);
+            $xMOD = $this->box->getX() + $xAlign;
+            $yMOD = $this->box->getY() + $yAlign + $yShift + ($n * $lineHeightPx);
 
             if ($line && $this->backgroundColor) {
                 // Marks whole texbox area with given background-color
                 $backgroundHeight = $this->fontSize;
 
                 $this->drawFilledRectangle(
-                    $xMOD,
-                    $this->box['y'] + $yAlign + ($n * $lineHeightPx) + ($lineHeightPx - $backgroundHeight) + (1 - $this->lineHeight) * 13 * (1 / 50 * $this->fontSize),
-                    $boxWidth,
-                    $backgroundHeight,
+                    new Rectangle(
+                        $xMOD,
+                        $this->box->getY() + $yAlign + ($n * $lineHeightPx) + ($lineHeightPx - $backgroundHeight) + (1 - $this->lineHeight) * 13 * (1 / 50 * $this->fontSize),
+                        $boxWidth,
+                        $backgroundHeight
+                    ),
                     $this->backgroundColor
                 );
             }
@@ -305,10 +299,12 @@ class Box
             if ($this->debug) {
                 // Marks current line with color
                 $this->drawFilledRectangle(
-                    $xMOD,
-                    $this->box['y'] + $yAlign + ($n * $lineHeightPx),
-                    $boxWidth,
-                    $lineHeightPx,
+                    new Rectangle(
+                        $xMOD,
+                        $this->box->getY() + $yAlign + ($n * $lineHeightPx),
+                        $boxWidth,
+                        $lineHeightPx
+                    ),
                     new Color(rand(1, 180), rand(1, 180), rand(1, 180))
                 );
             }
@@ -351,7 +347,7 @@ class Box
             $line = $words[0];
             for ($i = 1; $i < count($words); $i++) {
                 $box = $this->calculateBox($line." ".$words[$i]);
-                if (($box[4]-$box[6]) >= $this->box['width']) {
+                if (($box[4]-$box[6]) >= $this->box->getWidth()) {
                     $lines[] = $line;
                     $line = $words[$i];
                 } else {
@@ -371,9 +367,14 @@ class Box
         return 0.75 * $this->fontSize;
     }
 
-    protected function drawFilledRectangle($x, $y, $width, $height, Color $color)
+    protected function drawFilledRectangle(Rectangle $rect, Color $color)
     {
-        imagefilledrectangle($this->im, $x, $y, $x + $width, $y + $height,
+        imagefilledrectangle(
+            $this->im,
+            $rect->getLeft(),
+            $rect->getTop(),
+            $rect->getRight(),
+            $rect->getBottom(),
             $color->getIndex($this->im)
         );
     }

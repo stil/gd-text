@@ -263,13 +263,12 @@ class Box
         $n = 0;
         foreach ($lines as $line) {
             $box = $this->calculateBox($line);
-            $boxWidth = $box[2] - $box[0];
             switch ($this->alignX) {
                 case HorizontalAlignment::Center:
-                    $xAlign = ($this->box->getWidth() - $boxWidth) / 2;
+                    $xAlign = ($this->box->getWidth() - $box->getWidth()) / 2;
                     break;
                 case HorizontalAlignment::Right:
-                    $xAlign = ($this->box->getWidth() - $boxWidth);
+                    $xAlign = ($this->box->getWidth() - $box->getWidth());
                     break;
                 case HorizontalAlignment::Left:
                 default:
@@ -289,7 +288,7 @@ class Box
                     new Rectangle(
                         $xMOD,
                         $this->box->getY() + $yAlign + ($n * $lineHeightPx) + ($lineHeightPx - $backgroundHeight) + (1 - $this->lineHeight) * 13 * (1 / 50 * $this->fontSize),
-                        $boxWidth,
+                        $box->getWidth(),
                         $backgroundHeight
                     ),
                     $this->backgroundColor
@@ -302,7 +301,7 @@ class Box
                     new Rectangle(
                         $xMOD,
                         $this->box->getY() + $yAlign + ($n * $lineHeightPx),
-                        $boxWidth,
+                        $box->getWidth(),
                         $lineHeightPx
                     ),
                     new Color(rand(1, 180), rand(1, 180), rand(1, 180))
@@ -350,7 +349,7 @@ class Box
             $line = $words[0];
             for ($i = 1; $i < count($words); $i++) {
                 $box = $this->calculateBox($line." ".$words[$i]);
-                if (($box[4]-$box[6]) >= $this->box->getWidth()) {
+                if ($box->getWidth() >= $this->box->getWidth()) {
                     $lines[] = $line;
                     $line = $words[$i];
                 } else {
@@ -382,9 +381,26 @@ class Box
         );
     }
 
+    /**
+     * Returns the bounding box of a text.
+     * @param string $text
+     * @return Rectangle
+     */
     protected function calculateBox($text)
     {
-        return imagettfbbox($this->getFontSizeInPoints(), 0, $this->fontFace, $text);
+        $bounds = imagettfbbox($this->getFontSizeInPoints(), 0, $this->fontFace, $text);
+
+        $xLeft  = $bounds[0]; // (lower|upper) left corner, X position
+        $xRight = $bounds[2]; // (lower|upper) right corner, X position
+        $yLower = $bounds[1]; // lower (left|right) corner, Y position
+        $yUpper = $bounds[5]; // upper (left|right) corner, Y position
+
+        return new Rectangle(
+            $xLeft,
+            $yUpper,
+            $xRight - $xLeft,
+            $yLower - $yUpper
+        );
     }
 
     protected function strokeText($x, $y, $text)

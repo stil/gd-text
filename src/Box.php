@@ -384,7 +384,7 @@ class Box
 
     protected function calculateBox($text)
     {
-        return imageftbbox($this->getFontSizeInPoints(), 0, $this->fontFace, $text);
+        return imagettfbbox($this->getFontSizeInPoints(), 0, $this->fontFace, $text);
     }
 
     protected function strokeText($x, $y, $text)
@@ -400,7 +400,7 @@ class Box
 
     protected function drawInternal(Point $position, Color $color, $text)
     {
-        imagefttext(
+        imagettftext(
             $this->im,
             $this->getFontSizeInPoints(),
             0, // no rotation

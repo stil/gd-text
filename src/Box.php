@@ -263,12 +263,13 @@ class Box
                 $rectangle = $this->calculate($text);
 
                 $usedFontSize += $precision;
-            } while (($maxFontSize > 0 && $usedFontSize < $maxFontSize) && $rectangle->getHeight() < $this->box->getHeight() &&
-                     $rectangle->getWidth() < $this->box->getWidth());
+            } while (($maxFontSize > 0 && $usedFontSize < $maxFontSize)
+                     && $rectangle->getHeight() < $this->box->getHeight()
+                     && $rectangle->getWidth() < $this->box->getWidth());
 
-            $usedFontSize -= $precision;
-            $this->setFontSize($usedFontSize);
+            $usedFontSize -= $precision * 2;
         }
+        $this->setFontSize($usedFontSize);
 
         $rectangle = $this->drawText($text, true);
 

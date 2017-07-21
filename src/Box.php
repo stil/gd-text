@@ -238,7 +238,7 @@ class Box
      *
      * @return Rectangle Area that cover the drawn text
      */
-    public function drawFitFontSize($text, $precision = -1, &$usedFontSize = null)
+    public function drawFitFontSize($text, $precision = -1, $maxFontSize = -1, $minFontSize = -1, &$usedFontSize = null)
     {
         $initialFontSize = $this->fontSize;
 
@@ -252,7 +252,8 @@ class Box
                 $rectangle = $this->calculate($text);
 
                 $usedFontSize -= $precision;
-            } while ($rectangle->getHeight() > $this->box->getHeight() || $rectangle->getWidth() > $this->box->getWidth());
+            } while (($minFontSize == -1 || $usedFontSize > $minFontSize) &&
+                     ($rectangle->getHeight() > $this->box->getHeight() || $rectangle->getWidth() > $this->box->getWidth()));
 
             $usedFontSize += $precision;
         } else {
@@ -262,7 +263,8 @@ class Box
                 $rectangle = $this->calculate($text);
 
                 $usedFontSize += $precision;
-            } while ($rectangle->getHeight() < $this->box->getHeight() && $rectangle->getWidth() < $this->box->getWidth());
+            } while (($maxFontSize > 0 && $usedFontSize < $maxFontSize) && $rectangle->getHeight() < $this->box->getHeight() &&
+                     $rectangle->getWidth() < $this->box->getWidth());
 
             $usedFontSize -= $precision;
             $this->setFontSize($usedFontSize);

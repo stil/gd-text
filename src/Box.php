@@ -271,7 +271,7 @@ class Box
         $n = 0;
         foreach ($lines as $line) {
             $box = $this->calculateBox($line);
-            $boxWidth = $box[2] - $box[0];
+            $boxWidth = $box[2];
             switch ($this->alignX) {
                 case HorizontalAlignment::Center:
                     $xAlign = ($this->box['width'] - $boxWidth) / 2;

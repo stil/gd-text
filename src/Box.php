@@ -50,6 +50,11 @@ class Box
      * @var float
      */
     protected $lineHeight = 1.25;
+    
+    /**
+     * @var int
+     */
+    protected $textRotation = 0;
 
     /**
      * @var float
@@ -157,6 +162,15 @@ class Box
     public function setLineHeight($v)
     {
         $this->lineHeight = $v;
+    }
+    
+    /**
+     * Allows to customize text rotation
+     * @param int $d Text rotation angle, in degree (can be negative)
+     */
+    public function setTextRotation($d)
+    {
+        $this->textRotation = $d;
     }
 
     /**
@@ -419,7 +433,7 @@ class Box
         imagettftext(
             $this->im,
             $this->getFontSizeInPoints(),
-            0, // no rotation
+            $this->textRotation,
             $position->getX(),
             $position->getY(),
             $color->getIndex($this->im),

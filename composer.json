@@ -1,5 +1,5 @@
 {
-    "name": "stil/gd-text",
+    "name": "pe46dro/gd-text",
     "description": "A class drawing multiline and aligned text on pictures. Uses GD extension.",
     "license": "MIT",
     "require": {

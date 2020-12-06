@@ -1,10 +1,10 @@
 <?php
+
 namespace GDText\Tests;
 
 use GDText\Box;
 use GDText\Color;
 use GDText\HorizontalAlignment;
-use GDText\TextWrapping;
 use GDText\VerticalAlignment;
 
 class TextAlignmentTest extends TestCase
@@ -20,6 +20,7 @@ class TextAlignmentTest extends TestCase
         $box->setFontSize(16);
         $box->setBackgroundColor(new Color(0, 0, 0));
         $box->setBox(0, 10, imagesx($im), 150);
+
         return $box;
     }
 
@@ -30,11 +31,10 @@ class TextAlignmentTest extends TestCase
 
         foreach ($yList as $y) {
             foreach ($xList as $x) {
-
                 $im = $this->openImageResource('owl_png24.png');
                 $box = $this->mockBox($im);
                 $box->setTextAlign($x, $y);
-                $box->draw("Owls are birds from the order Strigiformes, which includes about 200 species.");
+                $box->draw('Owls are birds from the order Strigiformes, which includes about 200 species.');
 
                 $this->assertImageEquals("test_align_{$y}_{$x}.png", $im);
             }

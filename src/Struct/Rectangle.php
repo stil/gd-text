@@ -16,6 +16,7 @@ class Rectangle extends Point
 
     /**
      * Rectangle constructor.
+     *
      * @param int $x
      * @param int $y
      * @param int $width

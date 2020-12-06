@@ -1,4 +1,5 @@
 <?php
+
 namespace GDText\Tests;
 
 use GDText\Color;
@@ -33,7 +34,7 @@ class ColorTest extends TestCase
     public function testToArray()
     {
         $color = new Color(12, 34, 56);
-        $this->assertEquals(array(12, 34, 56), $color->toArray());
+        $this->assertEquals([12, 34, 56], $color->toArray());
     }
 
     public function testFromHsl()
@@ -42,7 +43,7 @@ class ColorTest extends TestCase
             [[0.5, 0.8, 0.3], [15, 138, 138]],
             [[0.999, 1, 1], [255, 255, 255]],
             [[0, 0, 0], [0, 0, 0]],
-            [[338/360, 0.85, 0.25], [118, 10, 49]],
+            [[338 / 360, 0.85, 0.25], [118, 10, 49]],
         ];
 
         foreach ($table as $pair) {

@@ -1,10 +1,12 @@
 <?php
+
 namespace GDText\Tests;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param $name
+     *
      * @return resource
      */
     protected function openImageResource($name)
@@ -14,6 +16,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
     /**
      * @param $name
+     *
      * @return string
      */
     protected function sha1ImageResource($name)
@@ -22,7 +25,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param string $name
+     * @param string   $name
      * @param resource $im
      */
     protected function assertImageEquals($name, $im)

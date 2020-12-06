@@ -16,6 +16,7 @@ class Point
 
     /**
      * Point constructor.
+     *
      * @param int $x
      * @param int $y
      */

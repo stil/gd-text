@@ -1,4 +1,5 @@
 <?php
+
 namespace GDText\Tests;
 
 use GDText\Box;
@@ -18,6 +19,7 @@ class TextWrappingTest extends TestCase
         $box->setFontSize(16);
         $box->setBox(0, 135, imagesx($im), 70);
         $box->setTextAlign('left', 'top');
+
         return $box;
     }
 
@@ -26,7 +28,7 @@ class TextWrappingTest extends TestCase
         $im = $this->openImageResource('owl_png24.png');
         $box = $this->mockBox($im);
         $box->setTextWrapping(TextWrapping::WrapWithOverflow);
-        $box->draw("Owls are birds from the order Strigiformes, which includes about 200 species.");
+        $box->draw('Owls are birds from the order Strigiformes, which includes about 200 species.');
 
         $this->assertImageEquals('test_wrap_WrapWithOverflow.png', $im);
     }
@@ -36,7 +38,7 @@ class TextWrappingTest extends TestCase
         $im = $this->openImageResource('owl_png24.png');
         $box = $this->mockBox($im);
         $box->setTextWrapping(TextWrapping::NoWrap);
-        $box->draw("Owls are birds from the order Strigiformes, which includes about 200 species.");
+        $box->draw('Owls are birds from the order Strigiformes, which includes about 200 species.');
 
         $this->assertImageEquals('test_wrap_NoWrap.png', $im);
     }

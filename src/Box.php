@@ -1,4 +1,5 @@
 <?php
+
 namespace GDText;
 
 use GDText\Struct\Point;
@@ -10,6 +11,11 @@ class Box
      * @var resource
      */
     protected $im;
+
+    /**
+     * @var int
+     */
+    protected $angle=0;
 
     /**
      * @var int
@@ -127,6 +133,14 @@ class Box
     public function setStrokeSize($v)
     {
         $this->strokeSize = $v;
+    }
+
+    /**
+     * @param int $v Angle ,The angle in degrees, with 0 degrees being left-to-right reading text.
+     */
+    public function setAngle($v)
+    {
+        $this->angle = $v;
     }
 
     /**
@@ -433,12 +447,12 @@ class Box
             $words = explode(" ", $line);
             $line = $words[0];
             for ($i = 1; $i < count($words); $i++) {
-                $box = $this->calculateBox($line." ".$words[$i]);
+                $box = $this->calculateBox($line . " " . $words[$i]);
                 if ($box->getWidth() >= $this->box->getWidth()) {
                     $lines[] = $line;
                     $line = $words[$i];
                 } else {
-                    $line .= " ".$words[$i];
+                    $line .= " " . $words[$i];
                 }
             }
             $lines[] = $line;
@@ -475,7 +489,7 @@ class Box
     {
         $bounds = imagettfbbox($this->getFontSizeInPoints(), 0, $this->fontFace, $text);
 
-        $xLeft  = $bounds[0]; // (lower|upper) left corner, X position
+        $xLeft = $bounds[0]; // (lower|upper) left corner, X position
         $xRight = $bounds[2]; // (lower|upper) right corner, X position
         $yLower = $bounds[1]; // lower (left|right) corner, Y position
         $yUpper = $bounds[5]; // upper (left|right) corner, Y position
@@ -504,7 +518,7 @@ class Box
         imagettftext(
             $this->im,
             $this->getFontSizeInPoints(),
-            0, // no rotation
+            $this->angle, 
             $position->getX(),
             $position->getY(),
             $color->getIndex($this->im),

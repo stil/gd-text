@@ -45,24 +45,67 @@ class Color
      * Parses string to Color object representation.
      * @param string $str String with color information, ex. #000000
      * @return Color
-     * @todo Add parsing of CSS-like strings: rgb(), rgba(), hsl()
+     * @todo Add parsing of CSS-like string: hsl()
      */
     public static function parseString($str)
     {
+        // CSS opacity value is in range 0-1, where 1 = opaque, 0 = transparent.
+        // This is the opposite of GD where value is in range 0-127 and 0 = opaque, 127 = transparent
+        // Work with CSS type value until end of function and then flip into GD compatible value
+        // Set default opacity to CSS friendly value of 1 (fully opaque)
+        $alpha = 1;
+
+        // Remove # if present
         $str = str_replace('#', '', $str);
-        if (strlen($str) == 6) {
-            $r = hexdec(substr($str, 0, 2));
-            $g = hexdec(substr($str, 2, 2));
-            $b = hexdec(substr($str, 4, 2));
-        } else if (strlen($str) == 3) {
-            $r = hexdec(str_repeat(substr($str, 0, 1), 2));
-            $g = hexdec(str_repeat(substr($str, 1, 1), 2));
-            $b = hexdec(str_repeat(substr($str, 2, 1), 2));
+
+        // Check to see if str is in rgb(a) format
+        if (strtolower(substr($str, 0, 4)) == 'rgba') {
+            preg_match('/rgba\((.*)\)/', $str, $matches);
+            $values = explode(',', $matches[1]);
+            if (count($values) == 4) {
+                $alpha = trim(array_pop($values));
+            } else {
+                $alpha = $alpha ?? 1;
+            }
+            $rgb = $values;
+        } elseif (strtolower(substr($str, 0, 3)) == 'rgb') {
+            // Check to see if str is in rgb format
+            preg_match('/rgb\((.*)\)/', $str, $matches);
+            list($r, $g, $b) = explode(',', $matches[1]);
+            $rgb = array($r, $g, $b);
+        } elseif (strlen($str) == 8) {
+            // Check if str is in hexadecimal format and has 8, 6, 4 or 3 characters and get values
+            // If str has 8 or 4 then set alpha using the value
+            $rgb = array_map('hexdec', array($str[0] . $str[1], $str[2] . $str[3], $str[4] . $str[5]));
+            $alpha = round(hexdec($str[6] . $str[7]) / 255, 2);
+        } elseif (strlen($str) == 6) {
+            $rgb = array_map('hexdec', array($str[0] . $str[1], $str[2] . $str[3], $str[4] . $str[5]));
+        } elseif (strlen($str) == 4) {
+            $rgb = array_map('hexdec', array($str[0] . $str[0], $str[1] . $str[1], $str[2] . $str[2]));
+            $alpha = round(hexdec($str[4] . $str[4]) / 255, 2);
+        } elseif (strlen($str) == 3) {
+            $rgb = array_map('hexdec', array($str[0] . $str[0], $str[1] . $str[1], $str[2] . $str[2]));
         } else {
             throw new \InvalidArgumentException('Unrecognized color.');
         }
 
-        return new Color($r, $g, $b);
+        // Normalise rgb values if necessary
+        foreach ($rgb as $color) {
+            $color = $color > 255 ? 255 : $color;
+            $color = $color < 0 ? 0 : $color;
+        }
+
+        //Normalise alpha value if necessary
+        $alpha = $alpha > 1 ? 1 : $alpha;
+        $alpha = $alpha < 0 ? 0 : $alpha;
+
+        // Flip from CSS opacity to GD alpha form
+        $alpha = (1 - $alpha) * 127;
+
+        // Expand $rgb
+        list($r, $g, $b) = $rgb;
+
+        return new Color($r, $g, $b, $alpha);
     }
 
     /**

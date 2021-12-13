@@ -57,6 +57,11 @@ class Box
     protected $baseline = 0.2;
 
     /**
+     * @var int
+     */
+    protected $spacing = 0;
+
+    /**
      * @var string
      */
     protected $fontFace = null;
@@ -187,6 +192,14 @@ class Box
 
         $this->alignX = $x;
         $this->alignY = $y;
+    }
+
+    /**
+     * @param int $spacing Spacing between characters
+     */
+    public function setSpacing($spacing)
+    {
+        $this->spacing = $spacing;
     }
 
     /**
@@ -480,6 +493,19 @@ class Box
         $yLower = $bounds[1]; // lower (left|right) corner, Y position
         $yUpper = $bounds[5]; // upper (left|right) corner, Y position
 
+        if ($this->spacing != 0) { // Fix text width
+            $getBoxW = fn($bBox) => $bBox[2] - $bBox[0];
+
+            $xRight = $xLeft;
+            $testStr = 'test';
+            $size = $this->getFontSizeInPoints();
+            $testW = $getBoxW(imagettfbbox($size, 0, $this->fontFace, $testStr));
+            foreach (mb_str_split($text) as $char) {
+                $fullBox = imagettfbbox($size, 0, $this->fontFace, $char . $testStr);
+                $xRight += $this->spacing + $getBoxW($fullBox) - $testW;
+            }
+        }
+
         return new Rectangle(
             $xLeft,
             $yUpper,
@@ -501,15 +527,29 @@ class Box
 
     protected function drawInternal(Point $position, Color $color, $text)
     {
-        imagettftext(
-            $this->im,
-            $this->getFontSizeInPoints(),
-            0, // no rotation
-            $position->getX(),
-            $position->getY(),
-            $color->getIndex($this->im),
-            $this->fontFace,
-            $text
-        );
+        if ($this->spacing == 0) {
+            imagettftext(
+                $this->im,
+                $this->getFontSizeInPoints(),
+                0, // no rotation
+                $position->getX(),
+                $position->getY(),
+                $color->getIndex($this->im),
+                $this->fontFace,
+                $text
+            );
+        } else {
+            $getBoxW = fn($bBox) => $bBox[2] - $bBox[0];
+
+            $x = $position->getX();
+            $testStr = 'test';
+            $size = $this->getFontSizeInPoints();
+            $testW = $getBoxW(imagettfbbox($size, 0, $this->fontFace, $testStr));
+            foreach (mb_str_split($text) as $char) {
+                $fullBox = imagettfbbox($size, 0, $this->fontFace, $char . $testStr);
+                imagettftext($this->im, $size, 0, $x - $fullBox[0], $position->getY(), $color->getIndex($this->im), $this->fontFace, $char);
+                $x += $this->spacing + $getBoxW($fullBox) - $testW;
+            }
+        }
     }
 }

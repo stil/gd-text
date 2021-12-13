@@ -533,6 +533,24 @@ class Box
             $size = $this->getFontSizeInPoints();
             $testW = $getBoxW(imagettfbbox($size, 0, $this->fontFace, $testStr));
             foreach (mb_str_split($text) as $char) {
+                if ($this->debug) {
+                    $bounds = imagettfbbox($size, 0, $this->fontFace, $char);
+                    $xLeft = $bounds[0]; // (lower|upper) left corner, X position
+                    $xRight = $bounds[2]; // (lower|upper) right corner, X position
+                    $yLower = $bounds[1]; // lower (left|right) corner, Y position
+                    $yUpper = $bounds[5]; // upper (left|right) corner, Y position
+
+                    $this->drawFilledRectangle(
+                        new Rectangle(
+                            $x - $bounds[0],
+                            $position->getY() - ($yLower - $yUpper),
+                            $xRight - $xLeft,
+                            $yLower - $yUpper
+                        ),
+                        new Color(rand(180, 255), rand(180, 255), rand(180, 255), 80)
+                    );
+                }
+
                 $fullBox = imagettfbbox($size, 0, $this->fontFace, $char . $testStr);
                 imagettftext($this->im, $size, 0, $x - $fullBox[0], $position->getY(), $color->getIndex($this->im), $this->fontFace, $char);
                 $x += $this->spacing + $getBoxW($fullBox) - $testW;

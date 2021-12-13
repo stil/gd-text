@@ -57,7 +57,7 @@ class Box
     protected $baseline = 0.2;
 
     /**
-     * @var int
+     * @var int|float
      */
     protected $spacing = 0;
 
@@ -195,7 +195,7 @@ class Box
     }
 
     /**
-     * @param int $spacing Spacing between characters
+     * @param int|float $spacing Spacing between characters
      */
     public function setSpacing($spacing)
     {
@@ -489,22 +489,9 @@ class Box
         $bounds = imagettfbbox($this->getFontSizeInPoints(), 0, $this->fontFace, $text);
 
         $xLeft  = $bounds[0]; // (lower|upper) left corner, X position
-        $xRight = $bounds[2]; // (lower|upper) right corner, X position
+        $xRight = $bounds[2] + (mb_strlen($text) * $this->spacing); // (lower|upper) right corner, X position
         $yLower = $bounds[1]; // lower (left|right) corner, Y position
         $yUpper = $bounds[5]; // upper (left|right) corner, Y position
-
-        if ($this->spacing != 0) { // Fix text width
-            $getBoxW = fn($bBox) => $bBox[2] - $bBox[0];
-
-            $xRight = $xLeft;
-            $testStr = 'test';
-            $size = $this->getFontSizeInPoints();
-            $testW = $getBoxW(imagettfbbox($size, 0, $this->fontFace, $testStr));
-            foreach (mb_str_split($text) as $char) {
-                $fullBox = imagettfbbox($size, 0, $this->fontFace, $char . $testStr);
-                $xRight += $this->spacing + $getBoxW($fullBox) - $testW;
-            }
-        }
 
         return new Rectangle(
             $xLeft,
@@ -538,7 +525,7 @@ class Box
                 $this->fontFace,
                 $text
             );
-        } else {
+        } else { // https://stackoverflow.com/a/65254013/528065
             $getBoxW = fn($bBox) => $bBox[2] - $bBox[0];
 
             $x = $position->getX();

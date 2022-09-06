@@ -5,7 +5,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param $name
-     * @return resource
+     * @return resource|\GdImage
      */
     protected function openImageResource($name)
     {
@@ -18,7 +18,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function sha1ImageResource($name)
     {
-        return sha1_file(__DIR__.'/images/'.$name);
+        return sha1_file(__DIR__ . '/images/' .$name);
     }
 
     /**

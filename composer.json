@@ -3,7 +3,7 @@
     "description": "A class drawing multiline and aligned text on pictures. Uses GD extension.",
     "license": "MIT",
     "require": {
-        "php": ">=5.3",
+        "php": ">=8.0",
         "ext-gd": "*"
     },
     "require-dev": {

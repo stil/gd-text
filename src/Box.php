@@ -6,82 +6,26 @@ use GDText\Struct\Rectangle;
 
 class Box
 {
-    /**
-     * @var resource
-     */
-    protected $im;
+    protected \GdImage $im;
 
-    /**
-     * @var int
-     */
-    protected $strokeSize = 0;
+    protected int $strokeSize = 0;
+    protected Color $strokeColor;
+    protected int $fontSize = 12;
+    protected Color $fontColor;
+    protected string $alignX = 'left';
+    protected string $alignY = 'top';
+    protected int $textWrapping = TextWrapping::WrapWithOverflow;
+    protected float $lineHeight = 1.25;
+    protected float $baseline = 0.2;
+    protected ?string $fontFaceFilePath = null;
+    protected bool $debug = false;
 
-    /**
-     * @var Color
-     */
-    protected $strokeColor;
+    protected ?Struct\Shadow $textShadow = null;
 
-    /**
-     * @var int
-     */
-    protected $fontSize = 12;
+    protected ?Color $backgroundColor = null;
+    protected Struct\Rectangle $box;
 
-    /**
-     * @var Color
-     */
-    protected $fontColor;
-
-    /**
-     * @var string
-     */
-    protected $alignX = 'left';
-
-    /**
-     * @var string
-     */
-    protected $alignY = 'top';
-
-    /**
-     * @var int
-     */
-    protected $textWrapping = TextWrapping::WrapWithOverflow;
-
-    /**
-     * @var float
-     */
-    protected $lineHeight = 1.25;
-
-    /**
-     * @var float
-     */
-    protected $baseline = 0.2;
-
-    /**
-     * @var string
-     */
-    protected $fontFace = null;
-
-    /**
-     * @var bool
-     */
-    protected $debug = false;
-
-    /**
-     * @var bool|array
-     */
-    protected $textShadow = false;
-
-    /**
-     * @var bool|Color
-     */
-    protected $backgroundColor = false;
-
-    /**
-     * @var Rectangle
-     */
-    protected $box;
-
-    public function __construct(&$image)
+    public function __construct(\GDImage $image)
     {
         $this->im = $image;
         $this->fontColor = new Color(0, 0, 0);
@@ -89,44 +33,38 @@ class Box
         $this->box = new Rectangle(0, 0, 100, 100);
     }
 
-    /**
-     * @param Color $color Font color
-     */
-    public function setFontColor(Color $color)
+    public function setFontColor(Color $fontColor) : void
     {
-        $this->fontColor = $color;
+        $this->fontColor = $fontColor;
     }
 
     /**
-     * @param string $path Path to the font file
+     * @param string $filePath Path to the font file
      */
-    public function setFontFace($path)
+    public function setFontFace(string $filePath) : void
     {
-        $this->fontFace = $path;
+        $this->fontFaceFilePath = $filePath;
     }
 
     /**
-     * @param int $v Font size in *pixels*
+     * @param int $fontsizePixels Font size in *pixels*
      */
-    public function setFontSize($v)
+    public function setFontSize(int $fontsizePixels) : void
     {
-        $this->fontSize = $v;
-    }
-
-    /**
-     * @param Color $color Stroke color
-     */
-    public function setStrokeColor(Color $color)
-    {
-        $this->strokeColor = $color;
+        $this->fontSize = $fontsizePixels;
     }
     
-    /**
-     * @param int $v Stroke size in *pixels*
-     */
-    public function setStrokeSize($v)
+    public function setStrokeColor(Color $strokeColor) : void
     {
-        $this->strokeSize = $v;
+        $this->strokeColor = $strokeColor;
+    }
+
+    /**
+     * @param int $strokeSizePixels Stroke size in *pixels*
+     */
+    public function setStrokeSize(int $strokeSizePixels) : void
+    {
+        $this->strokeSize = $strokeSizePixels;
     }
 
     /**
@@ -134,37 +72,34 @@ class Box
      * @param int $xShift Relative shadow position in pixels. Positive values move shadow to right, negative to left.
      * @param int $yShift Relative shadow position in pixels. Positive values move shadow to bottom, negative to up.
      */
-    public function setTextShadow(Color $color, $xShift, $yShift)
+    public function setTextShadow(Color $color, int $xShift, int $yShift) : void
     {
-        $this->textShadow = array(
-            'color' => $color,
-            'offset' => new Point($xShift, $yShift)
+        $this->textShadow = new Struct\Shadow(
+            $color,
+            new Struct\Point($xShift, $yShift),
         );
     }
 
-    /**
-     * @param Color $color Font color
-     */
-    public function setBackgroundColor(Color $color)
+    public function setBackgroundColor(Color $color) : void
     {
         $this->backgroundColor = $color;
     }
 
     /**
      * Allows to customize spacing between lines.
-     * @param float $v Height of the single text line, in percents, proportionally to font size
+     * @param float $value Height of the single text line, in percents, proportionally to font size
      */
-    public function setLineHeight($v)
+    public function setLineHeight(float $value) : void
     {
-        $this->lineHeight = $v;
+        $this->lineHeight = $value;
     }
 
     /**
-     * @param float $v Position of baseline, in percents, proportionally to line height measuring from the bottom.
+     * @param float $value Position of baseline, in percents, proportionally to line height measuring from the bottom.
      */
-    public function setBaseline($v)
+    public function setBaseline(float $value) : void
     {
-        $this->baseline = $v;
+        $this->baseline = $value;
     }
 
     /**
@@ -172,7 +107,7 @@ class Box
      * @param string $x Horizontal alignment. Allowed values are: left, center, right.
      * @param string $y Vertical alignment. Allowed values are: top, center, bottom.
      */
-    public function setTextAlign($x = 'left', $y = 'top')
+    public function setTextAlign(string $x = 'left', string $y = 'top') : void
     {
         $xAllowed = array('left', 'right', 'center');
         $yAllowed = array('top', 'bottom', 'center');
@@ -196,7 +131,7 @@ class Box
      * @param int $width Width of texbox in pixels.
      * @param int $height Height of textbox in pixels.
      */
-    public function setBox($x, $y, $width, $height)
+    public function setBox(int $x, int $y, int $width, int $height) : void
     {
         $this->box = new Rectangle($x, $y, $width, $height);
     }
@@ -204,41 +139,107 @@ class Box
     /**
      * Enables debug mode. Whole textbox and individual lines will be filled with random colors.
      */
-    public function enableDebug()
+    public function enableDebug() : void
     {
         $this->debug = true;
     }
 
-    /**
-     * @param int $textWrapping
-     */
-    public function setTextWrapping($textWrapping)
+    public function setTextWrapping(int $textWrapping) : void
     {
         $this->textWrapping = $textWrapping;
+    }
+
+
+    /**
+     * Draws the text on the picture.
+     *
+     * @param string $text Text to draw. May contain newline characters.
+     *
+     * @return Rectangle Area that cover the drawn text
+     */
+    public function draw(string $text) : Struct\Rectangle
+    {
+        return $this->drawText($text, true);
+    }
+
+    /**
+     * Draws the text on the picture, fitting it to the current box
+     *
+     * @param string $text      Text to draw. May contain newline characters.
+     * @param int    $precision Increment or decrement of font size. The lower this value, the slower this method.
+     *
+     * @return Rectangle Area that cover the drawn text
+     */
+    public function drawFitFontSize(string $text, int $precision = -1, int $maxFontSize = -1, int $minFontSize = -1, &$usedFontSize = null)  : Struct\Rectangle
+    {
+        $initialFontSize = $this->fontSize;
+
+        $usedFontSize = $this->fontSize;
+        $rectangle = $this->calculate($text);
+
+        if ($rectangle->getHeight() > $this->box->getHeight() || $rectangle->getWidth() > $this->box->getWidth()) {
+            // Decrement font size
+            do {
+                $this->setFontSize($usedFontSize);
+                $rectangle = $this->calculate($text);
+
+                $usedFontSize -= $precision;
+            } while (
+                ($minFontSize == -1 || $usedFontSize > $minFontSize) &&
+                ($rectangle->getHeight() > $this->box->getHeight() || $rectangle->getWidth() > $this->box->getWidth())
+            );
+
+            $usedFontSize += $precision;
+        } else {
+            // Increment font size
+            do {
+                $this->setFontSize($usedFontSize);
+                $rectangle = $this->calculate($text);
+
+                $usedFontSize += $precision;
+            } while (($maxFontSize > 0 && $usedFontSize < $maxFontSize)
+            && $rectangle->getHeight() < $this->box->getHeight()
+            && $rectangle->getWidth() < $this->box->getWidth());
+
+            $usedFontSize -= $precision * 2;
+        }
+        $this->setFontSize($usedFontSize);
+
+        $rectangle = $this->drawText($text, true);
+
+        // Restore initial font size
+        $this->setFontSize($initialFontSize);
+
+        return $rectangle;
+    }
+
+    /**
+     * Get the area that will cover the given text
+     */
+    public function calculate(string $text) : Struct\Rectangle
+    {
+        return $this->drawText($text, false);
     }
 
     /**
      * Draws the text on the picture.
      * @param string $text Text to draw. May contain newline characters.
+     * @param bool $draw
+     * @return Rectangle
      */
-    public function draw($text)
+    protected function drawText(string $text, bool $draw) : Struct\Rectangle
     {
-        if (!isset($this->fontFace)) {
+        if (!isset($this->fontFaceFilePath)) {
             throw new \InvalidArgumentException('No path to font file has been specified.');
         }
 
-        switch ($this->textWrapping) {
-            case TextWrapping::NoWrap:
-                $lines = array($text);
-                break;
-            case TextWrapping::WrapWithOverflow:
-            default:
-                $lines = $this->wrapTextWithOverflow($text);
-                break;
-        }
+        $lines = match ( $this->textWrapping ) {
+            TextWrapping::NoWrap => array( $text ),
+            default => $this->wrapTextWithOverflow($text),
+        };
 
         if ($this->debug) {
-            // Marks whole texbox area with color
+            // Marks whole textbox area with color
             $this->drawFilledRectangle(
                 $this->box,
                 new Color(rand(180, 255), rand(180, 255), rand(180, 255), 80)
@@ -248,40 +249,34 @@ class Box
         $lineHeightPx = $this->lineHeight * $this->fontSize;
         $textHeight = count($lines) * $lineHeightPx;
 
-        switch ($this->alignY) {
-            case VerticalAlignment::Center:
-                $yAlign = ($this->box->getHeight() / 2) - ($textHeight / 2);
-                break;
-            case VerticalAlignment::Bottom:
-                $yAlign = $this->box->getHeight() - $textHeight;
-                break;
-            case VerticalAlignment::Top:
-            default:
-                $yAlign = 0;
-        }
+        $yAlign = match ( $this->alignY ) {
+            VerticalAlignment::Center => ( $this->box->getHeight() / 2 ) - ( $textHeight / 2 ),
+            VerticalAlignment::Bottom => $this->box->getHeight() - $textHeight,
+            default => 0,
+        };
 
         $n = 0;
+
+        $drawnX = $drawnY = PHP_INT_MAX;
+        $drawnH = $drawnW = 0;
+
         foreach ($lines as $line) {
             $box = $this->calculateBox($line);
-            switch ($this->alignX) {
-                case HorizontalAlignment::Center:
-                    $xAlign = ($this->box->getWidth() - $box->getWidth()) / 2;
-                    break;
-                case HorizontalAlignment::Right:
-                    $xAlign = ($this->box->getWidth() - $box->getWidth());
-                    break;
-                case HorizontalAlignment::Left:
-                default:
-                    $xAlign = 0;
-            }
+
+            $xAlign = match ( $this->alignX ) {
+                HorizontalAlignment::Center => ( $this->box->getWidth() - $box->getWidth() ) / 2,
+                HorizontalAlignment::Right => ( $this->box->getWidth() - $box->getWidth() ),
+                default => 0,
+            };
+
             $yShift = $lineHeightPx * (1 - $this->baseline);
 
             // current line X and Y position
             $xMOD = $this->box->getX() + $xAlign;
             $yMOD = $this->box->getY() + $yAlign + $yShift + ($n * $lineHeightPx);
 
-            if ($line && $this->backgroundColor) {
-                // Marks whole texbox area with given background-color
+            if ($draw && $line && $this->backgroundColor !== null) {
+                // Marks whole textbox area with given background-color
                 $backgroundHeight = $this->fontSize;
 
                 $this->drawFilledRectangle(
@@ -308,29 +303,38 @@ class Box
                 );
             }
 
-            if ($this->textShadow !== false) {
+            if ($draw) {
+                if ($this->textShadow !== null) {
+                    $this->drawInternal(
+                        new Point(
+                            $xMOD + $this->textShadow->offset->getX(),
+                            $yMOD + $this->textShadow->offset->getY()
+                        ),
+                        $this->textShadow->color,
+                        $line,
+                    );
+                }
+
+                $this->strokeText((int)$xMOD, (int)$yMOD, $line);
                 $this->drawInternal(
                     new Point(
-                        $xMOD + $this->textShadow['offset']->getX(),
-                        $yMOD + $this->textShadow['offset']->getY()
+                        (int)$xMOD,
+                        (int)$yMOD
                     ),
-                    $this->textShadow['color'],
-                    $line
+                    $this->fontColor,
+                    $line,
                 );
             }
 
-            $this->strokeText($xMOD, $yMOD, $line);
-            $this->drawInternal(
-                new Point(
-                    $xMOD,
-                    $yMOD
-                ),
-                $this->fontColor,
-                $line
-            );
+            $drawnX = min($xMOD, $drawnX);
+            $drawnY = min($this->box->getY() + $yAlign + ($n * $lineHeightPx), $drawnY);
+            $drawnW = max($drawnW, $box->getWidth());
+            $drawnH += $lineHeightPx;
 
             $n++;
         }
+
+        return new Rectangle($drawnX, $drawnY, $drawnW, $drawnH);
     }
 
     /**
@@ -338,7 +342,7 @@ class Box
      * @param string $text
      * @return string[]
      */
-    protected function wrapTextWithOverflow($text)
+    protected function wrapTextWithOverflow(string $text) : array
     {
         $lines = array();
         // Split text explicitly into lines by \n, \r\n and \r
@@ -361,15 +365,12 @@ class Box
         return $lines;
     }
 
-    /**
-     * @return float
-     */
-    protected function getFontSizeInPoints()
+    protected function getFontSizeInPoints() : float
     {
         return 0.75 * $this->fontSize;
     }
 
-    protected function drawFilledRectangle(Rectangle $rect, Color $color)
+    protected function drawFilledRectangle(Rectangle $rect, Color $color) : void
     {
         imagefilledrectangle(
             $this->im,
@@ -383,12 +384,10 @@ class Box
 
     /**
      * Returns the bounding box of a text.
-     * @param string $text
-     * @return Rectangle
      */
-    protected function calculateBox($text)
+    protected function calculateBox(string $text) : Struct\Rectangle
     {
-        $bounds = imagettfbbox($this->getFontSizeInPoints(), 0, $this->fontFace, $text);
+        $bounds = imagettfbbox($this->getFontSizeInPoints(), 0, $this->fontFaceFilePath, $text);
 
         $xLeft  = $bounds[0]; // (lower|upper) left corner, X position
         $xRight = $bounds[2]; // (lower|upper) right corner, X position
@@ -403,7 +402,7 @@ class Box
         );
     }
 
-    protected function strokeText($x, $y, $text)
+    protected function strokeText(int $x, int $y, string $text) : void
     {
         $size = $this->strokeSize;
         if ($size <= 0) return;
@@ -414,7 +413,7 @@ class Box
         }
     }
 
-    protected function drawInternal(Point $position, Color $color, $text)
+    protected function drawInternal(Point $position, Color $color, $text) : void
     {
         imagettftext(
             $this->im,
@@ -423,7 +422,7 @@ class Box
             $position->getX(),
             $position->getY(),
             $color->getIndex($this->im),
-            $this->fontFace,
+            $this->fontFaceFilePath,
             $text
         );
     }

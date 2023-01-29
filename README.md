@@ -225,4 +225,4 @@ imagepng($image, null, 9, PNG_ALL_FILTERS);
     }
 ```
 
-![Laravel example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples/laravel.jpg)
+[![Laravel example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples/laravel.jpg)](https://halexa.tv/)

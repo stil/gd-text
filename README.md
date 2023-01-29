@@ -187,3 +187,40 @@ imagepng($im, null, 9, PNG_ALL_FILTERS);
 #### Debug mode enabled demo:
 
 ![debug example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples//debug.png)
+
+#### A Laravel Usage Example:
+
+```php
+    /**
+     * @param Request $request
+     * @param User $user
+     * @return StreamedResponse
+     */
+    public function image(Request $request, User $user) {
+        return response()->stream(function () use ($user) {
+            $baseImage = resource_path('assets/base-image.jpg');
+
+            $image = imagecreatefromjpeg($baseImage);
+
+            $x = 30;
+            $y = 420;
+            $shift = 3;
+
+            $box = new Box($image);
+            $box->setFontFace(resource_path('fonts/Pacifico.ttf'));
+            $box->setFontColor(new TailwindColor('slate', 200));
+            $box->setTextShadow(new TailwindColor('neutral', 500, 50), $shift, $shift);
+            $box->setFontSize(60);
+            $box->setBox($x, $y, 1200-(2 * $x), 630);
+            $box->setTextAlign('center', 'top');
+            $box->draw($user->name);
+
+            $content = imagejpeg($image, null, 100);
+            imagedestroy($image);
+
+            echo $content;
+        }, 200, [
+            'Content-Type' => 'image/jpeg',
+        ]);
+    }
+```

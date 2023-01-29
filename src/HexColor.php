@@ -10,9 +10,15 @@ class HexColor extends Color
      */
     public function __construct(string $hex, ?int $alpha = null)
     {
-        $hex = '#'.trim($hex, '#');
-        list($r, $g, $b) = sscanf($hex, "#%02x%02x%02x");
+        $hex = trim($hex, '#');
+        if (strlen($hex) == 3) {
+            $hex = $hex.$hex;
+        } else if (strlen($hex) == 2) {
+            $hex = $hex.$hex.$hex;
+        }
 
-        parent::__construct($r, $g, $b, $alpha);
+        list($r, $g, $b) = sscanf('#'.$hex, "#%02x%02x%02x");
+
+        parent::__construct((int) $r, (int) $g, (int) $b, $alpha);
     }
 }

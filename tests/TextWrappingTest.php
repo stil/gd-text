@@ -25,7 +25,7 @@ class TextWrappingTest extends TestCase
     {
         $im = $this->openImageResource('owl_png24.png');
         $box = $this->mockBox($im);
-        $box->setTextWrapping(TextWrapping::WrapWithOverflow);
+        $box->setTextWrapping(TextWrapping::WRAP_WITH_OVERFLOW);
         $box->draw("Owls are birds from the order Strigiformes, which includes about 200 species.");
 
         $this->assertImageEquals('test_wrap_WrapWithOverflow.png', $im);
@@ -35,7 +35,7 @@ class TextWrappingTest extends TestCase
     {
         $im = $this->openImageResource('owl_png24.png');
         $box = $this->mockBox($im);
-        $box->setTextWrapping(TextWrapping::NoWrap);
+        $box->setTextWrapping(TextWrapping::NOWRAP);
         $box->draw("Owls are birds from the order Strigiformes, which includes about 200 species.");
 
         $this->assertImageEquals('test_wrap_NoWrap.png', $im);

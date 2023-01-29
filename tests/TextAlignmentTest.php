@@ -25,8 +25,8 @@ class TextAlignmentTest extends TestCase
 
     public function testAlignment()
     {
-        $xList = [HorizontalAlignment::Left, HorizontalAlignment::Center, HorizontalAlignment::Right];
-        $yList = [VerticalAlignment::Top, VerticalAlignment::Center, VerticalAlignment::Bottom];
+        $xList = [HorizontalAlignment::LEFT, HorizontalAlignment::CENTER, HorizontalAlignment::RIGHT];
+        $yList = [VerticalAlignment::TOP, VerticalAlignment::CENTER, VerticalAlignment::BOTTOM];
 
         foreach ($yList as $y) {
             foreach ($xList as $x) {

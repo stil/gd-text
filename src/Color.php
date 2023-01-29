@@ -3,6 +3,7 @@
 namespace GDText;
 
 use InvalidArgumentException;
+use GdImage;
 
 /**
  * 8-bit RGB color representation.
@@ -48,35 +49,35 @@ class Color
     /**
      * Parses string to Color object representation.
      *
-     * @param string $str String with color information, ex. #000000
+     * @param string $string String with color information, ex. #000000
      * @return Color
      * @todo Add parsing of CSS-like strings: rgb(), rgba(), hsl()
      */
-    public static function parseString(string $str): Color
+    public static function parseString(string $string): Color
     {
-        $str = str_replace('#', '', $str);
-        if (strlen($str) == 6) {
-            $r = hexdec(substr($str, 0, 2));
-            $g = hexdec(substr($str, 2, 2));
-            $b = hexdec(substr($str, 4, 2));
-        } else if (strlen($str) == 3) {
-            $r = hexdec(str_repeat(substr($str, 0, 1), 2));
-            $g = hexdec(str_repeat(substr($str, 1, 1), 2));
-            $b = hexdec(str_repeat(substr($str, 2, 1), 2));
+        $string = str_replace('#', '', $string);
+        if (strlen($string) == 6) {
+            $r = hexdec(substr($string, 0, 2));
+            $g = hexdec(substr($string, 2, 2));
+            $b = hexdec(substr($string, 4, 2));
+        } else if (strlen($string) == 3) {
+            $r = hexdec(str_repeat(substr($string, 0, 1), 2));
+            $g = hexdec(str_repeat(substr($string, 1, 1), 2));
+            $b = hexdec(str_repeat(substr($string, 2, 1), 2));
         } else {
-            throw new InvalidArgumentException('Unrecognized color.');
+            throw new InvalidArgumentException('Unrecognized color');
         }
 
         return new Color($r, $g, $b);
     }
 
     /**
-     * @param float $h Hue
-     * @param float $s Saturation
-     * @param float $l Light
+     * @param float $hue Hue
+     * @param float $saturation Saturation
+     * @param float $light Light
      * @return Color
      */
-    public static function fromHsl(float $h, float $s, float $l): Color
+    public static function fromHsl(float $hue, float $saturation, float $light): Color
     {
         $fromFloat = function (array $rgb) {
             foreach ($rgb as &$v) {
@@ -88,34 +89,42 @@ class Color
 
         // If saturation is 0, the given color is grey and only
         // lightness is relevant.
-        if ($s == 0) {
-            return $fromFloat(array($l, $l, $l));
+        if ($saturation == 0) {
+            return $fromFloat(array($light, $light, $light));
         }
 
         // Else calculate r, g, b according to hue.
         // Check http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSL for details
-        $chroma = (1 - abs(2 * $l - 1)) * $s;
-        $h_ = $h * 6;
+        $chroma = (1 - abs(2 * $light - 1)) * $saturation;
+        $h_ = $hue * 6;
         $x = $chroma * (1 - abs((fmod($h_, 2)) - 1)); // Note: fmod because % (modulo) returns int value!!
-        $m = $l - round($chroma / 2, 10); // Bugfix for strange float behaviour (e.g. $l=0.17 and $s=1)
+        $m = $light - round($chroma / 2, 10); // Bugfix for strange float behaviour (e.g. $l=0.17 and $s=1)
 
-        if ($h_ >= 0 && $h_ < 1) $rgb = array(($chroma + $m), ($x + $m), $m);
-        elseif ($h_ >= 1 && $h_ < 2) $rgb = array(($x + $m), ($chroma + $m), $m);
-        elseif ($h_ >= 2 && $h_ < 3) $rgb = array($m, ($chroma + $m), ($x + $m));
-        elseif ($h_ >= 3 && $h_ < 4) $rgb = array($m, ($x + $m), ($chroma + $m));
-        elseif ($h_ >= 4 && $h_ < 5) $rgb = array(($x + $m), $m, ($chroma + $m));
-        elseif ($h_ >= 5 && $h_ < 6) $rgb = array(($chroma + $m), $m, ($x + $m));
-        else throw new InvalidArgumentException('Invalid hue, it should be a value between 0 and 1.');
+        if ($h_ >= 0 && $h_ < 1) {
+            $rgb = array(($chroma + $m), ($x + $m), $m);
+        } elseif ($h_ >= 1 && $h_ < 2) {
+            $rgb = array(($x + $m), ($chroma + $m), $m);
+        } elseif ($h_ >= 2 && $h_ < 3) {
+            $rgb = array($m, ($chroma + $m), ($x + $m));
+        } elseif ($h_ >= 3 && $h_ < 4) {
+            $rgb = array($m, ($x + $m), ($chroma + $m));
+        } elseif ($h_ >= 4 && $h_ < 5) {
+            $rgb = array(($x + $m), $m, ($chroma + $m));
+        } elseif ($h_ >= 5 && $h_ < 6) {
+            $rgb = array(($chroma + $m), $m, ($x + $m));
+        } else {
+            throw new InvalidArgumentException('Invalid hue, it should be a value between 0 and 1');
+        }
 
         return $fromFloat($rgb);
     }
 
     /**
-     * @param resource $image GD image resource
+     * @param GdImage $image GD image resource
      * @return int Returns the index of the specified color+alpha in the palette of the image,
      *             or index of allocated color if the color does not exist in the image's palette.
      */
-    public function getIndex($image): int
+    public function getIndex(GdImage $image): int
     {
         $index = $this->hasAlphaChannel()
             ? imagecolorexactalpha(

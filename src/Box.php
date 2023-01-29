@@ -4,13 +4,14 @@ namespace GDText;
 use GDText\Struct\Point;
 use GDText\Struct\Rectangle;
 use InvalidArgumentException;
+use GdImage;
 
 class Box
 {
     /**
-     * @var resource
+     * @var GdImage
      */
-    protected $im;
+    protected GdImage $im;
 
     /**
      * @var int
@@ -45,7 +46,7 @@ class Box
     /**
      * @var int
      */
-    protected int $textWrapping = TextWrapping::WrapWithOverflow;
+    protected int $textWrapping = TextWrapping::WRAP_WITH_OVERFLOW;
 
     /**
      * @var float
@@ -181,11 +182,11 @@ class Box
         $yAllowed = array('top', 'bottom', 'center');
 
         if (!in_array($x, $xAllowed)) {
-            throw new InvalidArgumentException('Invalid horizontal alignment value was specified.');
+            throw new InvalidArgumentException('Invalid horizontal alignment value was specified');
         }
 
         if (!in_array($y, $yAllowed)) {
-            throw new InvalidArgumentException('Invalid vertical alignment value was specified.');
+            throw new InvalidArgumentException('Invalid vertical alignment value was specified');
         }
 
         $this->alignX = $x;
@@ -216,7 +217,7 @@ class Box
     /**
      * @param int $textWrapping
      */
-    public function setTextWrapping($textWrapping): void
+    public function setTextWrapping(int $textWrapping): void
     {
         $this->textWrapping = $textWrapping;
     }
@@ -229,11 +230,11 @@ class Box
     public function draw(string $text): void
     {
         if (!isset($this->fontFace)) {
-            throw new InvalidArgumentException('No path to font file has been specified.');
+            throw new InvalidArgumentException('No path to font file has been specified');
         }
 
         $lines = match ($this->textWrapping) {
-            TextWrapping::NoWrap => array($text),
+            TextWrapping::NOWRAP => array($text),
             default => $this->wrapTextWithOverflow($text),
         };
 
@@ -249,8 +250,8 @@ class Box
         $textHeight = count($lines) * $lineHeightPx;
 
         $yAlign = match ($this->alignY) {
-            VerticalAlignment::Center => ($this->box->getHeight() / 2) - ($textHeight / 2),
-            VerticalAlignment::Bottom => $this->box->getHeight() - $textHeight,
+            VerticalAlignment::CENTER => ($this->box->getHeight() / 2) - ($textHeight / 2),
+            VerticalAlignment::BOTTOM => $this->box->getHeight() - $textHeight,
             default => 0,
         };
 
@@ -258,8 +259,8 @@ class Box
         foreach ($lines as $line) {
             $box = $this->calculateBox($line);
             $xAlign = match ($this->alignX) {
-                HorizontalAlignment::Center => ($this->box->getWidth() - $box->getWidth()) / 2,
-                HorizontalAlignment::Right => ($this->box->getWidth() - $box->getWidth()),
+                HorizontalAlignment::CENTER => ($this->box->getWidth() - $box->getWidth()) / 2,
+                HorizontalAlignment::RIGHT => ($this->box->getWidth() - $box->getWidth()),
                 default => 0,
             };
             $yShift = $lineHeightPx * (1 - $this->baseline);
@@ -334,15 +335,15 @@ class Box
         $explicitLines = preg_split('/\n|\r\n?/', $text);
         foreach ($explicitLines as $line) {
             // Check every line if it needs to be wrapped
-            $words = explode(" ", $line);
+            $words = explode(' ', $line);
             $line = $words[0];
             for ($i = 1; $i < count($words); $i++) {
-                $box = $this->calculateBox($line." ".$words[$i]);
+                $box = $this->calculateBox($line.' '.$words[$i]);
                 if ($box->getWidth() >= $this->box->getWidth()) {
                     $lines[] = $line;
                     $line = $words[$i];
                 } else {
-                    $line .= " ".$words[$i];
+                    $line .= ' '.$words[$i];
                 }
             }
             $lines[] = $line;

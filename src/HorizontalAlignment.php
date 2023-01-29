@@ -3,7 +3,7 @@ namespace GDText;
 
 abstract class HorizontalAlignment
 {
-    const Left = 'left';
-    const Right = 'right';
-    const Center = 'center';
+    const LEFT = 'left';
+    const RIGHT = 'right';
+    const CENTER = 'center';
 }

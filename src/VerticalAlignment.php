@@ -3,7 +3,7 @@ namespace GDText;
 
 abstract class VerticalAlignment
 {
-    const Top = 'top';
-    const Bottom = 'bottom';
-    const Center = 'center';
+    const TOP = 'top';
+    const BOTTOM = 'bottom';
+    const CENTER = 'center';
 }

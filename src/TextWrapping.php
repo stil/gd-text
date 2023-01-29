@@ -3,6 +3,6 @@ namespace GDText;
 
 abstract class TextWrapping
 {
-    const NoWrap = 1;
-    const WrapWithOverflow = 2;
+    const NOWRAP = 1;
+    const WRAP_WITH_OVERFLOW = 2;
 }

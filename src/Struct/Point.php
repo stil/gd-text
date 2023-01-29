@@ -7,12 +7,12 @@ class Point
     /**
      * @var int
      */
-    private int $x;
+    protected int $x;
 
     /**
      * @var int
      */
-    private int $y;
+    protected int $y;
 
     /**
      * Point constructor.

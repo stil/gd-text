@@ -2,6 +2,8 @@
 
 namespace GDText;
 
+use InvalidArgumentException;
+
 class HexColor extends Color
 {
     /**
@@ -17,7 +19,11 @@ class HexColor extends Color
             $hex = $hex.$hex.$hex;
         }
 
-        list($r, $g, $b) = sscanf('#'.$hex, "#%02x%02x%02x");
+        if (strlen($hex) != 6) {
+            throw new InvalidArgumentException('Unrecognized color');
+        }
+
+        list($r, $g, $b) = sscanf('#'.$hex, '#%02x%02x%02x');
 
         parent::__construct((int) $r, (int) $g, (int) $b, $alpha);
     }

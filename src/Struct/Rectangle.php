@@ -7,21 +7,22 @@ class Rectangle extends Point
     /**
      * @var int
      */
-    private $width;
+    private int $width;
 
     /**
      * @var int
      */
-    private $height;
+    private int $height;
 
     /**
      * Rectangle constructor.
+     *
      * @param int $x
      * @param int $y
      * @param int $width
      * @param int $height
      */
-    public function __construct($x, $y, $width, $height)
+    public function __construct(int $x, int $y, int $width, int $height)
     {
         parent::__construct($x, $y);
         $this->width = $width;
@@ -31,7 +32,7 @@ class Rectangle extends Point
     /**
      * @return int
      */
-    public function getWidth()
+    public function getWidth(): int
     {
         return $this->width;
     }
@@ -39,7 +40,7 @@ class Rectangle extends Point
     /**
      * @return int
      */
-    public function getHeight()
+    public function getHeight(): int
     {
         return $this->height;
     }
@@ -47,7 +48,7 @@ class Rectangle extends Point
     /**
      * @return int
      */
-    public function getLeft()
+    public function getLeft(): int
     {
         return $this->getX();
     }
@@ -55,7 +56,7 @@ class Rectangle extends Point
     /**
      * @return int
      */
-    public function getTop()
+    public function getTop(): int
     {
         return $this->getY();
     }
@@ -63,7 +64,7 @@ class Rectangle extends Point
     /**
      * @return int
      */
-    public function getRight()
+    public function getRight(): int
     {
         return $this->getX() + $this->width;
     }
@@ -71,7 +72,7 @@ class Rectangle extends Point
     /**
      * @return int
      */
-    public function getBottom()
+    public function getBottom(): int
     {
         return $this->getY() + $this->height;
     }

@@ -1,17 +1,21 @@
 {
-    "name": "stil/gd-text",
+    "name": "norman-huth/gd-text",
     "description": "A class drawing multiline and aligned text on pictures. Uses GD extension.",
     "license": "MIT",
     "require": {
-        "php": ">=5.3",
+        "php": "^8.0",
         "ext-gd": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.2"
+        "phpunit/phpunit": "^9.5.10"
     },
     "autoload": {
         "psr-4": {
-            "GDText\\": "src/",
+            "GDText\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "GDText\\Tests\\": "tests/"
         }
     }

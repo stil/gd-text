@@ -7,19 +7,20 @@ class Point
     /**
      * @var int
      */
-    private $x;
+    private int $x;
 
     /**
      * @var int
      */
-    private $y;
+    private int $y;
 
     /**
      * Point constructor.
+     *
      * @param int $x
      * @param int $y
      */
-    public function __construct($x, $y)
+    public function __construct(int $x, int $y)
     {
         $this->x = $x;
         $this->y = $y;
@@ -28,7 +29,7 @@ class Point
     /**
      * @return int
      */
-    public function getX()
+    public function getX(): int
     {
         return $this->x;
     }
@@ -36,7 +37,7 @@ class Point
     /**
      * @return int
      */
-    public function getY()
+    public function getY(): int
     {
         return $this->y;
     }

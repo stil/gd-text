@@ -1,13 +1,16 @@
 gd-text
 =======
 
+forked from [stil/gd-text](https://github.com/stil/gd-text)
+
 ### Installation via Composer:
 
 ```bash
-composer require stil/gd-text
+composer require norman-huth/gd-text
 ```
 
 ### Basic usage example
+
 ```php
 <?php
 require __DIR__.'/../vendor/autoload.php';

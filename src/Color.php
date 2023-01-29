@@ -1,8 +1,10 @@
 <?php
+
 namespace GDText;
 
 /**
  * 8-bit RGB color representation.
+ *
  * @package GDText
  */
 class Color
@@ -10,30 +12,30 @@ class Color
     /**
      * @var int
      */
-    protected $red;
+    protected int $red;
 
     /**
      * @var int
      */
-    protected $green;
+    protected int $green;
 
     /**
      * @var int
      */
-    protected $blue;
+    protected int $blue;
 
     /**
      * @var int|null
      */
-    protected $alpha;
+    protected ?int $alpha;
 
     /**
      * @param int $red Value of red component 0-255
      * @param int $green Value of green component 0-255
      * @param int $blue Value of blue component 0-255
-     * @param int $alpha A value between 0 and 127. 0 indicates completely opaque while 127 indicates completely transparent.
+     * @param int|null $alpha A value between 0 and 127. 0 indicates completely opaque while 127 indicates completely transparent.
      */
-    public function __construct($red = 0, $green = 0, $blue = 0, $alpha = null)
+    public function __construct(int $red = 0, int $green = 0, int $blue = 0, ?int $alpha = null)
     {
         $this->red = $red;
         $this->green = $green;
@@ -43,11 +45,12 @@ class Color
 
     /**
      * Parses string to Color object representation.
+     *
      * @param string $str String with color information, ex. #000000
      * @return Color
      * @todo Add parsing of CSS-like strings: rgb(), rgba(), hsl()
      */
-    public static function parseString($str)
+    public static function parseString(string $str): Color
     {
         $str = str_replace('#', '', $str);
         if (strlen($str) == 6) {
@@ -71,7 +74,7 @@ class Color
      * @param float $l Light
      * @return Color
      */
-    public static function fromHsl($h, $s, $l)
+    public static function fromHsl(float $h, float $s, float $l): Color
     {
         $fromFloat = function (array $rgb) {
             foreach ($rgb as &$v) {
@@ -90,9 +93,9 @@ class Color
         // Else calculate r, g, b according to hue.
         // Check http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSL for details
         $chroma = (1 - abs(2 * $l - 1)) * $s;
-        $h_     = $h * 6;
-        $x      = $chroma * (1 - abs((fmod($h_,2)) - 1)); // Note: fmod because % (modulo) returns int value!!
-        $m = $l - round($chroma/2, 10); // Bugfix for strange float behaviour (e.g. $l=0.17 and $s=1)
+        $h_ = $h * 6;
+        $x = $chroma * (1 - abs((fmod($h_, 2)) - 1)); // Note: fmod because % (modulo) returns int value!!
+        $m = $l - round($chroma / 2, 10); // Bugfix for strange float behaviour (e.g. $l=0.17 and $s=1)
 
         if ($h_ >= 0 && $h_ < 1) $rgb = array(($chroma + $m), ($x + $m), $m);
         elseif ($h_ >= 1 && $h_ < 2) $rgb = array(($x + $m), ($chroma + $m), $m);
@@ -110,7 +113,7 @@ class Color
      * @return int Returns the index of the specified color+alpha in the palette of the image,
      *             or index of allocated color if the color does not exist in the image's palette.
      */
-    public function getIndex($image)
+    public function getIndex($image): int
     {
         $index = $this->hasAlphaChannel()
             ? imagecolorexactalpha(
@@ -132,7 +135,7 @@ class Color
     /**
      * @return bool TRUE when alpha channel is specified, FALSE otherwise
      */
-    public function hasAlphaChannel()
+    public function hasAlphaChannel(): bool
     {
         return $this->alpha !== null;
     }
@@ -140,7 +143,7 @@ class Color
     /**
      * @return int[]
      */
-    public function toArray()
+    public function toArray(): array
     {
         return array($this->red, $this->green, $this->blue);
     }

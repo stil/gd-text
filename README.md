@@ -191,14 +191,26 @@ imagepng($image, null, 9, PNG_ALL_FILTERS);
 #### A Laravel Usage Example:
 
 ```php
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Recipe;
+use GDText\Box;
+use GDText\TailwindColor;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
+class RecipeController extends Controller
+{
     /**
-     * @param Request $request
      * @param Recipe $recipe
      * @return StreamedResponse
      */
-    public function image(Request $request, Recipe $recipe) {
-        return response()->stream(function () use ($user) {
-            $baseImage = resource_path('assets/open-graph/recipe-show.jpg'); // 1200 x 630
+    public function image(Recipe $recipe)
+    {
+        return response()->stream(function () use ($recipe) {
+            $baseImage = resource_path('assets/open-graph/recipe-show.jpg');        // 1200 x 630
 
             $image = imagecreatefromjpeg($baseImage);
 
@@ -211,7 +223,7 @@ imagepng($image, null, 9, PNG_ALL_FILTERS);
             $box->setFontColor(new TailwindColor('slate', 200));
             $box->setTextShadow(new TailwindColor('neutral', 500, 50), $shift, $shift);
             $box->setFontSize(60);
-            $box->setBox($x, $y, 1200-(2 * $x), 630);
+            $box->setBox($x, $y, 1200 - (2 * $x), 630);
             $box->setTextAlign('center', 'top');
             $box->draw($recipe->title);
 
@@ -223,6 +235,7 @@ imagepng($image, null, 9, PNG_ALL_FILTERS);
             'Content-Type' => 'image/jpeg',
         ]);
     }
+}
 ```
 
 [![Laravel example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples/laravel.jpg)](https://halexa.tv/)

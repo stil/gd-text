@@ -15,7 +15,7 @@ class TextAlignmentTest extends TestCase
         imagesavealpha($im, true);
 
         $box = new Box($im);
-        $box->setFontFace(__DIR__.'/LinLibertine_R.ttf'); // http://www.dafont.com/franchise.font
+        $box->setFontFace(__DIR__.'/LinLibertine_R.ttf'); // https://www.dafont.com/franchise.font
         $box->setFontColor(new Color(255, 75, 140));
         $box->setFontSize(16);
         $box->setBackgroundColor(new Color(0, 0, 0));

@@ -93,7 +93,7 @@ $backgroundColor = imagecolorallocate($image, 0, 18, 64);
 imagefill($image, 0, 0, $backgroundColor);
 
 $box = new Box($image);
-$box->setFontFace(__DIR__.'/Minecraftia.ttf'); // http://www.dafont.com/minecraftia.font
+$box->setFontFace(__DIR__.'/Minecraftia.ttf'); // https://www.dafont.com/minecraftia.font
 $box->setFontColor(new Color(255, 75, 140));
 $box->setTextShadow(new Color(0, 0, 0, 50), 2, 2);
 $box->setFontSize(8);
@@ -123,7 +123,7 @@ $backgroundColor = imagecolorallocate($image, 0, 18, 64);
 imagefill($image, 0, 0, $backgroundColor);
 
 $box = new Box($image);
-$box->setFontFace(__DIR__.'/Elevant bold.ttf'); // http://www.dafont.com/elevant-by-pelash.font
+$box->setFontFace(__DIR__.'/Elevant bold.ttf'); // https://www.dafont.com/elevant-by-pelash.font
 $box->setFontSize(150);
 $box->setFontColor(new Color(255, 255, 255));
 $box->setBox(15, 20, 460, 460);

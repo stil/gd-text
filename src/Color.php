@@ -94,7 +94,7 @@ class Color
         }
 
         // Else calculate r, g, b according to hue.
-        // Check http://en.wikipedia.org/wiki/HSL_and_HSV#From_HSL for details
+        // Check https://en.wikipedia.org/wiki/HSL_and_HSV#From_HSL for details
         $chroma = (1 - abs(2 * $light - 1)) * $saturation;
         $h_ = $hue * 6;
         $x = $chroma * (1 - abs((fmod($h_, 2)) - 1)); // Note: fmod because % (modulo) returns int value!!

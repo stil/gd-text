@@ -2,6 +2,42 @@
     "name": "norman-huth/gd-text",
     "description": "A class drawing multiline and aligned text on pictures. Uses GD extension.",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/Muetze42/gd-text/issues",
+        "source": "https://github.com/Muetze42/gd-text",
+        "docs": "https://github.com/Muetze42/gd-text#readme"
+    },
+    "keywords": [
+        "dynamic-image",
+        "ext-gd",
+        "gd",
+        "gd-library",
+        "image",
+        "image-generator",
+        "image-manipulation",
+        "laravel",
+        "php",
+        "php-8",
+        "text-to-image"
+    ],
+    "authors": [
+        {
+            "name": "nstil",
+            "homepage": "https://github.com/stil"
+        },
+        {
+            "name": "Cristian Mirea-Ghiban",
+            "homepage": "https://github.com/liviucmg"
+        },
+        {
+            "name": "Helmut Januschka",
+            "homepage": "https://github.com/hjanuschka"
+        },
+        {
+            "name": "Norman Huth",
+            "homepage": "https://huth.it"
+        }
+    ],
     "require": {
         "php": "^8.0",
         "ext-gd": "*"

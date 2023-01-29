@@ -4,6 +4,10 @@ namespace GDText;
 
 class HexColor extends Color
 {
+    /**
+     * @param string $hex
+     * @param int|null $alpha
+     */
     public function __construct(string $hex, ?int $alpha = null)
     {
         $hex = '#'.trim($hex, '#');

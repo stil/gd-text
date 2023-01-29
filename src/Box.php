@@ -3,6 +3,7 @@ namespace GDText;
 
 use GDText\Struct\Point;
 use GDText\Struct\Rectangle;
+use InvalidArgumentException;
 
 class Box
 {
@@ -180,11 +181,11 @@ class Box
         $yAllowed = array('top', 'bottom', 'center');
 
         if (!in_array($x, $xAllowed)) {
-            throw new \InvalidArgumentException('Invalid horizontal alignment value was specified.');
+            throw new InvalidArgumentException('Invalid horizontal alignment value was specified.');
         }
 
         if (!in_array($y, $yAllowed)) {
-            throw new \InvalidArgumentException('Invalid vertical alignment value was specified.');
+            throw new InvalidArgumentException('Invalid vertical alignment value was specified.');
         }
 
         $this->alignX = $x;
@@ -228,7 +229,7 @@ class Box
     public function draw(string $text): void
     {
         if (!isset($this->fontFace)) {
-            throw new \InvalidArgumentException('No path to font file has been specified.');
+            throw new InvalidArgumentException('No path to font file has been specified.');
         }
 
         $lines = match ($this->textWrapping) {

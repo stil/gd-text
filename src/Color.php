@@ -2,6 +2,8 @@
 
 namespace GDText;
 
+use InvalidArgumentException;
+
 /**
  * 8-bit RGB color representation.
  *
@@ -62,7 +64,7 @@ class Color
             $g = hexdec(str_repeat(substr($str, 1, 1), 2));
             $b = hexdec(str_repeat(substr($str, 2, 1), 2));
         } else {
-            throw new \InvalidArgumentException('Unrecognized color.');
+            throw new InvalidArgumentException('Unrecognized color.');
         }
 
         return new Color($r, $g, $b);
@@ -79,7 +81,7 @@ class Color
         $fromFloat = function (array $rgb) {
             foreach ($rgb as &$v) {
                 $v = (int)round($v * 255);
-            };
+            }
 
             return new Color($rgb[0], $rgb[1], $rgb[2]);
         };
@@ -103,7 +105,7 @@ class Color
         elseif ($h_ >= 3 && $h_ < 4) $rgb = array($m, ($x + $m), ($chroma + $m));
         elseif ($h_ >= 4 && $h_ < 5) $rgb = array(($x + $m), $m, ($chroma + $m));
         elseif ($h_ >= 5 && $h_ < 6) $rgb = array(($chroma + $m), $m, ($x + $m));
-        else throw new \InvalidArgumentException('Invalid hue, it should be a value between 0 and 1.');
+        else throw new InvalidArgumentException('Invalid hue, it should be a value between 0 and 1.');
 
         return $fromFloat($rgb);
     }

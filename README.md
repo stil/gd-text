@@ -170,35 +170,35 @@ imagepng($im, null, 9, PNG_ALL_FILTERS);
 
 #### Line height demo:
 
-![line height example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples//lineheight.gif)
+![line height example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples/lineheight.gif)
 
 #### Text alignment demo:
 
-![align example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples//alignment.gif)
+![align example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples/alignment.gif)
 
 #### Text stroke demo:
 
-![stroke example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples//stroke.gif)
+![stroke example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples/stroke.gif)
 
 #### Text background demo:
 
-![stroke example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples//background.gif)
+![stroke example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples/background.gif)
 
 #### Debug mode enabled demo:
 
-![debug example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples//debug.png)
+![debug example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples/debug.png)
 
 #### A Laravel Usage Example:
 
 ```php
     /**
      * @param Request $request
-     * @param User $user
+     * @param Recipe $recipe
      * @return StreamedResponse
      */
-    public function image(Request $request, User $user) {
+    public function image(Request $request, Recipe $recipe) {
         return response()->stream(function () use ($user) {
-            $baseImage = resource_path('assets/base-image.jpg');
+            $baseImage = resource_path('assets/open-graph/recipe-show.jpg'); // 1200 x 630
 
             $image = imagecreatefromjpeg($baseImage);
 
@@ -213,7 +213,7 @@ imagepng($im, null, 9, PNG_ALL_FILTERS);
             $box->setFontSize(60);
             $box->setBox($x, $y, 1200-(2 * $x), 630);
             $box->setTextAlign('center', 'top');
-            $box->draw($user->name);
+            $box->draw($recipe->title);
 
             $content = imagejpeg($image, null, 100);
             imagedestroy($image);
@@ -224,3 +224,5 @@ imagepng($im, null, 9, PNG_ALL_FILTERS);
         ]);
     }
 ```
+
+![Laravel example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples/laravel.jpg)

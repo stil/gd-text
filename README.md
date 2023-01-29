@@ -1,15 +1,37 @@
-gd-text
-=======
+# gd-text
 
 forked from [stil/gd-text](https://github.com/stil/gd-text)
 
-### Installation via Composer:
+## Installation via Composer:
 
 ```bash
 composer require norman-huth/gd-text
 ```
 
-### Basic usage example
+## Basic usage example
+
+### New Fork Features
+
+#### HexColor
+
+```php
+use GDText\HexColor;
+
+$box->setFontColor(new HexColor('#0ea5e9'));
+$box->setFontColor(new HexColor('7e22ce'));
+$box->setFontColor(new HexColor('7e22ce', 50));
+```
+
+#### [Tailwind CSS Color](https://tailwindcss.com/docs/customizing-colors)
+
+```php
+use GDText\TailwindColor;
+
+$box->setFontColor(new TailwindColor('slate', 200));
+$box->setFontColor(new TailwindColor('slate', 200, 50));
+```
+
+### Usage
 
 ```php
 <?php
@@ -53,12 +75,11 @@ header("Content-type: image/png");
 imagepng($im);
 ```
 
-Example output:
+#### Example output:
 
 ![fonts example](examples/fonts.png)
 
-Multilined text
----------------
+#### Multi lined text
 
 ```php
 <?php
@@ -88,8 +109,7 @@ header("Content-type: image/png;");
 imagepng($im, null, 9, PNG_ALL_FILTERS);
 ```
 
-Text stroke
------------
+#### Text stroke
 
 ```php
 <?php
@@ -118,8 +138,7 @@ header("Content-type: image/png;");
 imagepng($im, null, 9, PNG_ALL_FILTERS);
 ```
 
-Text background
------------
+#### Text background
 
 ```php
 <?php
@@ -147,24 +166,24 @@ header("Content-type: image/png;");
 imagepng($im, null, 9, PNG_ALL_FILTERS);
 ```
 
-Demos
-------
-Line height demo:
+### Demos
+
+#### Line height demo:
 
 ![line height example](examples/lineheight.gif)
 
-Text alignment demo:
+#### Text alignment demo:
 
 ![align example](examples/alignment.gif)
 
-Text stroke demo:
+#### Text stroke demo:
 
 ![stroke example](examples/stroke.gif)
 
-Text background demo:
+#### Text background demo:
 
 ![stroke example](examples/background.gif)
 
-Debug mode enabled demo:
+#### Debug mode enabled demo:
 
 ![debug example](examples/debug.png)

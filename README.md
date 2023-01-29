@@ -77,7 +77,7 @@ imagepng($im);
 
 #### Example output:
 
-![fonts example](examples/fonts.png)
+![fonts example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples/fonts.png)
 
 #### Multi lined text
 
@@ -170,20 +170,20 @@ imagepng($im, null, 9, PNG_ALL_FILTERS);
 
 #### Line height demo:
 
-![line height example](examples/lineheight.gif)
+![line height example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples//lineheight.gif)
 
 #### Text alignment demo:
 
-![align example](examples/alignment.gif)
+![align example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples//alignment.gif)
 
 #### Text stroke demo:
 
-![stroke example](examples/stroke.gif)
+![stroke example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples//stroke.gif)
 
 #### Text background demo:
 
-![stroke example](examples/background.gif)
+![stroke example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples//background.gif)
 
 #### Debug mode enabled demo:
 
-![debug example](examples/debug.png)
+![debug example](https://raw.githubusercontent.com/Muetze42/gd-text/main/examples//debug.png)

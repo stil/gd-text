@@ -1,8 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 namespace GDText;
 
-abstract class TextWrapping
+enum TextWrapping
 {
-    const NoWrap = 1;
-    const WrapWithOverflow = 2;
+    case NoWrap;
+    case WrapWithOverflow;
 }

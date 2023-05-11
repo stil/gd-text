@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 namespace GDText;
 
-abstract class VerticalAlignment
+enum VerticalAlignment: string
 {
-    const Top = 'top';
-    const Bottom = 'bottom';
-    const Center = 'center';
+    case Top = 'top';
+    case Bottom = 'bottom';
+    case Center = 'center';
 }

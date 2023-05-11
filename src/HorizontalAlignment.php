@@ -1,9 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 namespace GDText;
 
-abstract class HorizontalAlignment
+enum HorizontalAlignment: string
 {
-    const Left = 'left';
-    const Right = 'right';
-    const Center = 'center';
+    case Left = 'left';
+    case Right = 'right';
+    case Center = 'center';
 }

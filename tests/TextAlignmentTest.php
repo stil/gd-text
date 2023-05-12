@@ -9,7 +9,7 @@ use GDText\VerticalAlignment;
 
 class TextAlignmentTest extends TestCase
 {
-    protected function mockBox($im)
+    protected function mockBox($im): Box
     {
         imagealphablending($im, true);
         imagesavealpha($im, true);
@@ -36,7 +36,7 @@ class TextAlignmentTest extends TestCase
                 $box->setTextAlign($x, $y);
                 $box->draw("Owls are birds from the order Strigiformes, which includes about 200 species.");
 
-                $this->assertImageEquals("test_align_{$y}_{$x}.png", $im);
+                $this->assertImageEquals("test_align_{$y->value}_{$x->value}.png", $im);
             }
         }
     }

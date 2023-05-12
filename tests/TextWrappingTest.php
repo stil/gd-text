@@ -3,11 +3,13 @@ namespace GDText\Tests;
 
 use GDText\Box;
 use GDText\Color;
+use GDText\HorizontalAlignment;
 use GDText\TextWrapping;
+use GDText\VerticalAlignment;
 
 class TextWrappingTest extends TestCase
 {
-    protected function mockBox($im)
+    protected function mockBox($im): Box
     {
         imagealphablending($im, true);
         imagesavealpha($im, true);
@@ -17,7 +19,7 @@ class TextWrappingTest extends TestCase
         $box->setFontColor(new Color(255, 75, 140));
         $box->setFontSize(16);
         $box->setBox(0, 135, imagesx($im), 70);
-        $box->setTextAlign('left', 'top');
+        $box->setTextAlign(HorizontalAlignment::Left, VerticalAlignment::Top);
         return $box;
     }
 
